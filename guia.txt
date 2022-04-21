@@ -24,3 +24,6 @@ php artisan make:controller PaymentController
 php artisan make:controller PaymentController
 
 sudo chown [username]:docker /var/run/docker.sock
+
+get ip on linux
+hostname -I | cut -d ' ' -f1

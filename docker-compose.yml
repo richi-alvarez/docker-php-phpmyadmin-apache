@@ -14,19 +14,24 @@ services:
             - ./conf:/etc/mysql/conf.d
             - persistent:/var/lib/mysql
         networks:
-            - default
+            - www-network
     www:
         build: .
+        container_name: www
         ports: 
             - "81:80"
         volumes:
             - ./www:/var/www/html
             #- ./config:/usr/local/etc/php
             - ./php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        environment:
+            XDEBUG_CLIENT_HOST: 172.17.0.1
+            XDEBUG_CLIENT_PORT: 9001
+            PHP_IDE_CONFIG: serverName=www-server'
         links:
             - db
         networks:
-            - default
+            - www-network
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         links: 
@@ -36,7 +41,11 @@ services:
         environment:
             MYSQL_USER: root
             MYSQL_PASSWORD: test
-            MYSQL_ROOT_PASSWORD: test 
+            MYSQL_ROOT_PASSWORD: test
+        networks:
+            - www-network
 volumes:
     persistent: {}
 
+networks:
+    www-network:
