@@ -16,10 +16,10 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    zlib1g-dev
+    zlib1g-dev \
+    libjpeg-dev
 
-
-RUN docker-php-ext-configure gd && \
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install gd
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql
@@ -50,11 +50,9 @@ COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 #install node
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
-
 #install yarn
 RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt update && apt install yarn
-
 WORKDIR /var/www/html
 RUN a2enmod rewrite
