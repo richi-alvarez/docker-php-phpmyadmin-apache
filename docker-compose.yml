@@ -1,51 +1,61 @@
-version: "3.1"
 services:
-    db:
-        image: mysql
+    mysql:
+        #container_name: mysql
+        image: mariadb:10.6.4-focal
+        #image: mysql:5.7
+        restart: always
         ports: 
-            - "3307:3306"
-        command: --default-authentication-plugin=mysql_native_password
+            - "3308:3306"
+        command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
+        #command: --default-authentication-plugin=caching_sha2_password
         environment:
-            MYSQL_DATABASE: dbname
+            MYSQL_DATABASE: wordpress
             MYSQL_PASSWORD: test
-            MYSQL_ROOT_PASSWORD: test 
+            MYSQL_ROOT_PASSWORD: test
+            #MYSQL_USER: root
         volumes:
-            - ./dump:/docker-entrypoint-initdb.d
-            - ./conf:/etc/mysql/conf.d
+            - ./mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
+            #- ./conf:/etc/mysql/conf.d
             - persistent:/var/lib/mysql
         networks:
-            - www-network
-    www:
+            - local-network
+    local:
         build: .
-        container_name: www
+        container_name: local
+        restart: always
         ports: 
-            - "81:80"
+            - "86:80"
         volumes:
             - ./www:/var/www/html
             #- ./config:/usr/local/etc/php
             - ./php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
         environment:
             XDEBUG_CLIENT_HOST: 172.17.0.1
-            XDEBUG_CLIENT_PORT: 9001
-            PHP_IDE_CONFIG: serverName=www-server'
+            XDEBUG_CLIENT_PORT: 9004
+            PHP_IDE_CONFIG: serverName=local-server
         links:
-            - db
+            - mysql
         networks:
-            - www-network
+            - local-network
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
-        links: 
-            - db:db
+        links:
+            - mysql:mysql
         ports:
-            - 8001:80
+            - 8089:80
+        restart: always
         environment:
+            PMA_ARBITRARY: 1
+            PMA_HOST: mysql
             MYSQL_USER: root
             MYSQL_PASSWORD: test
             MYSQL_ROOT_PASSWORD: test
+        depends_on:
+            - mysql
         networks:
-            - www-network
+            - local-network
 volumes:
     persistent: {}
 
 networks:
-    www-network:
+    local-network:
