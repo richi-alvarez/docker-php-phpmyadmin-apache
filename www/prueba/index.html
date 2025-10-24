@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>epayco</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
+    <script src="http://eks-cms-backend-platforms-service.epayco.io/plugin/ePaycoCheckoutPlugin.js" defer=""></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="epayco-checkout-plugin">
+</div>
+<script type="text/javascript" src="https://checkout.epayco.co/checkout.js"></script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        if(ePaycoCheckoutPlugin) {
+            ePaycoCheckoutPlugin.configure({ publicKey: "c07cda3a7218670d57dfa55bc9270a5d", test: true });
+            ePaycoCheckoutPlugin.open({ 
+                invoice: "123445",
+                amount: "11,900.00",
+                currency: "COP",
+                description: "camisa roja de ejemplo con tutilo largo y sudadera de ejemplo para descripciones",
+                email:"ricardo.saldarriaga@gmail.com",
+                base_tax: "10000",
+                tax: "1900",
+                ico:"0",
+                cellphone: "3184210294",
+                cellphoneType: '+57',
+                documentType: "CC",
+                document: "1037071220",
+                address:"Calle 34 #12-10",
+                city:"Medellin",
+                country:"Colombia",
+                stepValue: 2,
+                lang:"en",
+                paymentMethod:"card", // cash, pse
+                actionUlr:"http://localhost/wordpress/wordpress/?wc-api=WC_WooEpaycoSuscription_Gateway&order_id=191&confirmation=1"
+            });
+        } else {
+            console.error("ePaycoCheckoutPlugin no está cargado todavía");
+        }
+        /*
+        if (window.DetailPurchase) {
+            DetailPurchase.config({
+            referencePayco: '101730712',  // ID de referencia de la orden a consultar
+            sendEmail: true, // Habilita envío de comprobante al correo
+            lang: "es" // Idioma del componente (es, en, pt)
+            });
+        } else {
+            console.error("DetailPurchase no está cargado todavía");
+        }
+        */
+    });
+
+</script>
+</body>
+</html>
