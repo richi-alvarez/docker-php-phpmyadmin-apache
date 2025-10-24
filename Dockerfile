@@ -12,7 +12,7 @@ RUN echo "Apache: ${APACHE_VERSION}, APR: ${APR_VERSION}, APR-util: ${APR_UTIL_V
 
 # Instalar dependencias necesarias
 RUN apt-get update && apt-get install -y libssl-dev unzip \
-    cron \
+   # cron \
     && rm -r /var/lib/apt/lists/*
 
 # Actualizar PATH para incluir Apache compilado
@@ -20,7 +20,7 @@ ENV PATH="/usr/local/apache2/bin:$PATH"
 
 # Instalar extensiones
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
-RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath
+RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl
 
 # Establecer archivo ini
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
@@ -38,8 +38,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # ===============================
 # 3️⃣ Instalar y habilitar Xdebug
 # ===============================
-RUN pecl install xdebug && docker-php-ext-enable xdebug
-COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # ===============================
 # 4️⃣ Configuración PHP personalizada
