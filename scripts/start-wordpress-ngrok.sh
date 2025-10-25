@@ -61,6 +61,20 @@ echo "🏷️  URL configurada: $NGROK_URL"
 DOMAIN=$(echo "$NGROK_URL" | sed 's|https://||; s|http://||')
 echo "🏷️  Configurando Wordpress para usar solo: $DOMAIN"
 
+echo "🔧 Actualizando URLs en la base de datos de WordPress..."
+# docker-compose exec -T mysql mysql -u root -ptest wordpress <<SQL || { echo "❌ Error actualizando DB"; exit 1; }
+# UPDATE wp_options SET option_value = '${NGROK_URL}' WHERE option_name = 'home';
+# UPDATE wp_options SET option_value = '${NGROK_URL}' WHERE option_name = 'siteurl';
+# SELECT CONCAT('WordPress configurado para: ', '${NGROK_URL}') as resultado;
+# SQL
+
+
+echo "🔄 Reiniciando WordPress para aplicar cambios..."
+docker-compose restart wordpress
+
+echo "⏳ Esperando que WordPress reinicie..."
+sleep 15
+
 echo ""
 echo "🎉 ¡WordPress configurado exitosamente con ngrok!"
 echo ""
@@ -69,7 +83,8 @@ echo "🌐 WordPress Sitio:      $NGROK_URL"
 echo "⚙️  WordPress Admin:      $NGROK_URL/wp-admin"
 echo "🌐 Ngrok Dashboard:      http://localhost:4041"
 echo "🗄️  phpMyAdmin:          http://localhost:8089"
-echo "🛒 Wordpress Local:     http://localhost:8081"
+echo "🐳 Apache Local:         http://localhost:86"
+echo "🛒 PrestaShop Local:     http://localhost:8082"
 echo ""
 echo "🔑 Para configurar WordPress:"
 echo "   1. Ve a: $NGROK_URL/wp-admin/install.php"

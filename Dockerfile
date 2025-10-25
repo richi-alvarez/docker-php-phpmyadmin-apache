@@ -53,6 +53,7 @@ ENV LC_ALL=en_US.UTF-8
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl ldap soap
 
+<<<<<<< HEAD
 # ===============================
 # 2️⃣ Instalar Composer
 # ===============================
@@ -60,6 +61,37 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin \
     --filename=composer \
     --version=2.7.0
+=======
+RUN docker-php-ext-configure zip --with-libzip && \
+    docker-php-ext-install zip
+
+# Install extensions
+RUN docker-php-ext-install mysqli mbstring exif pcntl bcmath zip
+RUN docker-php-source delete
+
+<<<<<<< HEAD
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+=======
+# Establecer archivo ini
+RUN ln -s $PHP_INI_DIR/php.ini $PHP_INI_DIR/php.ini
+# Instalar y configurar Xdebug
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+#RUN install-php-extensions xdebug && docker-php-ext-enable xdebug
+#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+>>>>>>> f795e8f (feat:se ajusta docker-compose para purebas automatizadas con php)
+
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+RUN git config --global user.email "user@email.com" \
+    && git config --global user.name "user name"
+
+RUN pecl install -f xdebug apcu \
+    && docker-php-ext-enable xdebug apcu
+>>>>>>> 2249af3 (feat:se ajusta docker-compose para purebas automatizadas con php)
 
 # ===============================
 # 2.1 Instalar WP-CLI
