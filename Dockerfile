@@ -23,7 +23,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl
 
 # Establecer archivo ini
-RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+RUN ln -s $PHP_INI_DIR/php.ini $PHP_INI_DIR/php.ini
 # Instalar y configurar Xdebug
 #RUN pecl install xdebug && docker-php-ext-enable xdebug
 #RUN install-php-extensions xdebug && docker-php-ext-enable xdebug
