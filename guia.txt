@@ -29,3 +29,8 @@ get ip on linux
 hostname -I | cut -d ' ' -f1
 
 docker volume prune
+
+chmod +x ./scripts/start-ngrok-prestashop.sh
+chmod +x ./scripts/stop-all.sh
+chmod +x ./scripts/logs.sh
+chmod +x ./scripts/start-with-ngrok-choice.sh

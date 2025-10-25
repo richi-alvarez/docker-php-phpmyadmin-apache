@@ -33,8 +33,17 @@ RUN docker-php-ext-configure zip --with-libzip && \
 RUN docker-php-ext-install mysqli mbstring exif pcntl bcmath zip
 RUN docker-php-source delete
 
+<<<<<<< HEAD
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+=======
+# Establecer archivo ini
+RUN ln -s $PHP_INI_DIR/php.ini $PHP_INI_DIR/php.ini
+# Instalar y configurar Xdebug
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+#RUN install-php-extensions xdebug && docker-php-ext-enable xdebug
+#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+>>>>>>> f795e8f (feat:se ajusta docker-compose para purebas automatizadas con php)
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
