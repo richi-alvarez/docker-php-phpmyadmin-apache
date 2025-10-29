@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# filepath: ./scripts/start-wordpress-ngrok.sh
+# filepath: ./scripts/start-joomla-ngrok.sh
 set -e
 
 echo "🚀 Iniciando MySQL..."
@@ -14,13 +14,13 @@ docker-compose up -d phpmyadmin
 echo "⏳ Esperando que phpMyAdmin esté listo..."
 sleep 15
 
-echo "🛒 Iniciando Wordpress..."
-docker-compose up -d wordpress
+echo "🛒 Iniciando Joomla..."
+docker-compose up -d joomla
 
-echo "⏳ Esperando que Wordpress esté listo..."
+echo "⏳ Esperando que Joomla esté listo..."
 sleep 25
 
-echo "🌐 Iniciando ngrok para WordPress..."
+echo "🌐 Iniciando ngrok para Joomla..."
 docker-compose up -d ngrok
 
 echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4041)..."
@@ -47,23 +47,15 @@ fi
 echo "🏷️  URL configurada: $NGROK_URL"
 
 DOMAIN=$(echo "$NGROK_URL" | sed 's|https://||; s|http://||')
-echo "🏷️  Configurando Wordpress para usar solo: $DOMAIN"
+echo "🏷️  Configurando Joomla para usar solo: $DOMAIN"
 
 echo ""
-echo "🎉 ¡WordPress configurado exitosamente con ngrok!"
+echo "🎉 Joomla configurado exitosamente con ngrok!"
 echo ""
 echo "📋 URLs disponibles:"
-echo "🌐 WordPress Sitio:      $NGROK_URL"
-echo "⚙️  WordPress Admin:      $NGROK_URL/wp-admin"
+echo "🌐 Joomla Sitio:      $NGROK_URL"
+echo "⚙️  Joomla Admin:      $NGROK_URL/administrator"
 echo "🌐 Ngrok Dashboard:      http://localhost:4041"
 echo "🗄️  phpMyAdmin:          http://localhost:8089"
 echo "🐳 Apache Local:         http://localhost:86"
-echo "🛒 PrestaShop Local:     http://localhost:8082"
-echo ""
-echo "🔑 Para configurar WordPress:"
-echo "   1. Ve a: $NGROK_URL/wp-admin/install.php"
-echo "   2. Sigue el asistente de instalación"
-echo ""
-echo "🔍 Para verificar el estado:"
-echo "   docker-compose logs wordpress"
-echo "   docker-compose logs ngrok-wordpress"
+echo "🛒 Joomla Local:     http://localhost:8082"
