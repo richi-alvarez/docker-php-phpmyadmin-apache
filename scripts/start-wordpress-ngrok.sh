@@ -8,6 +8,12 @@ docker-compose up -d mysql
 echo "⏳ Esperando que MySQL esté listo..."
 sleep 15
 
+echo "🚀 Iniciando phpMyAdmin..."
+docker-compose up -d phpmyadmin
+
+echo "⏳ Esperando que phpMyAdmin esté listo..."
+sleep 15
+
 echo "🛒 Iniciando Wordpress..."
 docker-compose up -d wordpress
 

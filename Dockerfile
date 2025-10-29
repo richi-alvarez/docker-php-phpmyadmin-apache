@@ -11,8 +11,19 @@ WORKDIR /var/www/html
 RUN echo "Apache: ${APACHE_VERSION}, APR: ${APR_VERSION}, APR-util: ${APR_UTIL_VERSION}"
 
 # Instalar dependencias necesarias
-RUN apt-get update && apt-get install -y libssl-dev unzip \
-   # cron \
+RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    unzip \
+    wait-for-it \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    libcurl3-dev \
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) gd zip mysqli curl \
+    && docker-php-ext-enable gd zip mysqli curl \
     && rm -r /var/lib/apt/lists/*
 
 # Actualizar PATH para incluir Apache compilado
@@ -38,8 +49,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # ===============================
 # 3️⃣ Instalar y habilitar Xdebug
 # ===============================
-#RUN pecl install xdebug && docker-php-ext-enable xdebug
-#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # ===============================
 # 4️⃣ Configuración PHP personalizada

@@ -5,10 +5,11 @@ set -e
 echo "🚀 ¿Qué servicio quieres exponer con ngrok?"
 echo "1) PrestaShop"
 echo "2) WordPress"
-echo "3) Apache Local"
-echo "4) Todos los servicios (sin ngrok)"
+echo "3) OpenCart"
+echo "4) Apache Local"
+echo "5) Todos los servicios (sin ngrok)"
 echo ""
-read -p "Selecciona una opción (1-4): " choice
+read -p "Selecciona una opción (1-5): " choice
 
 case $choice in
   1)
@@ -20,17 +21,22 @@ case $choice in
     ./scripts/start-wordpress-ngrok.sh
     ;;
   3)
-    echo "🐳 Configurando ngrok para Apache local..."
-    docker-compose up -d --build
+    echo "🛒 Configurando ngrok para OpenCart..."
+    ./scripts/start-opencart-ngrok.sh
     ;;
   4)
+    echo "🐳 Configurando ngrok para Apache local..."
+    ./scripts/start-ngrok-local.sh
+    ;;
+  5)
     echo "🚀 Iniciando todos los servicios localmente..."
-    docker-compose up -d mysql local prestashop wordpress phpmyadmin
+    docker-compose up -d mysql local prestashop wordpress opencart phpmyadmin
     echo ""
     echo "✅ Todos los servicios iniciados:"
     echo "🐳 Apache Local:     http://localhost:86"
     echo "🛒 PrestaShop:       http://localhost:8082"
     echo "📝 WordPress:        http://localhost:8083"
+    echo "🛒 OpenCart:         http://localhost:8084"
     echo "🗄️  phpMyAdmin:      http://localhost:8089"
     ;;
   *)
