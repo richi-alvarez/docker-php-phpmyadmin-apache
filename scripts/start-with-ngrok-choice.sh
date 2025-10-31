@@ -8,7 +8,8 @@ echo "2) WordPress"
 echo "3) OpenCart"
 echo "4) Apache Local"
 echo "5) Joomla"
-echo "6) Todos los servicios (sin ngrok)"
+echo "6) Magento"
+echo "7) Todos los servicios (sin ngrok)"
 echo ""
 read -p "Selecciona una opción (1-5): " choice
 
@@ -34,8 +35,12 @@ case $choice in
     ./scripts/start-joomla-ngrok.sh
     ;;
   6)
+    echo "🐳 Configurando ngrok para Magento local..."
+    ./scripts/start-magento-ngrok.sh
+    ;;
+  7)
     echo "🚀 Iniciando todos los servicios localmente..."
-    docker-compose up -d mysql local prestashop wordpress opencart phpmyadmin
+    docker-compose up -d mysql local prestashop wordpress  magento phpmyadmin
     echo ""
     echo "✅ Todos los servicios iniciados:"
     echo "🐳 Apache Local:     http://localhost:86"
