@@ -1,0 +1,105 @@
+FROM php:8.2-apache
+
+# ===============================
+# 1️⃣ Variables y configuraciones
+# ===============================
+ARG DEBIAN_FRONTEND=noninteractive
+ARG UID 
+ARG XDEBUG_CLIENT_HOST 
+ENV XDEBUG_CLIENT_HOST=${XDEBUG_CLIENT_HOST}
+ARG XDEBUG_CLIENT_PORT 
+ENV XDEBUG_CLIENT_PORT=${XDEBUG_CLIENT_PORT}
+ENV TZ="America/Bogota"
+
+ARG MAGENTO_PUBLIC_KEY
+ENV MAGENTO_PUBLIC_KEY=${MAGENTO_PUBLIC_KEY}
+ARG MAGENTO_PRIVATE_KEY
+ENV MAGENTO_PRIVATE_KEY=${MAGENTO_PRIVATE_KEY}
+
+ARG MAGENTO_DB_HOST
+ENV MAGENTO_DB_HOST=${MAGENTO_DB_HOST}
+ARG MAGENTO_DB_USER
+ENV MAGENTO_DB_USER=${MAGENTO_DB_USER}
+ARG MAGENTO_DB_PASSWORD
+ENV MAGENTO_DB_PASSWORD=${MAGENTO_DB_PASSWORD}
+ARG MAGENTO_DB_NAME
+ENV MAGENTO_DB_NAME=${MAGENTO_DB_NAME}
+
+ARG ADMIN_FIRSTNAME
+ENV ADMIN_FIRSTNAME=${ADMIN_FIRSTNAME}
+
+ARG ADMIN_LASTNAME
+ENV ADMIN_LASTNAME=${ADMIN_LASTNAME}
+
+ARG ADMIN_EMAIL
+ENV ADMIN_EMAIL=${ADMIN_EMAIL}
+
+ARG ADMIN_PASSWORD
+ENV ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+ARG ADMIN_USER
+ENV ADMIN_USER=${ADMIN_USER}
+
+ARG LANGUAGE
+ENV LANGUAGE=${LANGUAGE}
+
+ARG CURRENCY
+ENV CURRENCY=${CURRENCY}
+
+WORKDIR /var/www/html
+
+# ===============================
+# 2️⃣ Dependencias necesarias
+# ===============================
+RUN apt-get update && apt-get install -y \
+    libssl-dev unzip curl cron git gnupg default-mysql-client mariadb-client \
+    libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libonig-dev libxml2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# ===============================
+# 3️⃣ Extensiones PHP
+# ===============================
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl opcache soap xmlrpc xml sockets xsl ftp
+
+RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+
+# ===============================
+# 4️⃣ Composer + Symfony
+# ===============================
+RUN curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin \
+    --filename=composer \
+    --version=2.7.0
+
+# ===============================
+# 5️⃣ Apache + Magento ajustes
+# ===============================
+ENV APACHE_DOCUMENT_ROOT /var/www/html/pub
+
+# Habilitar mod_rewrite
+RUN a2enmod rewrite
+
+# Ajustar DocumentRoot y permitir .htaccess
+#RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf \
+    #&& echo '<Directory /var/www/html/pub>\nOptions Indexes FollowSymLinks\nAllowOverride All\nRequire all granted\n</Directory>' >> /etc/apache2/apache2.conf
+COPY php/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# =============================== 
+# 5️⃣ Xdebug 
+# =============================== 
+# Instalar Xdebug y habilitarlo
+#RUN install-php-extensions xdebug 
+#COPY php/dev/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+# ===============================
+# 6️⃣ Script de instalación
+# ===============================
+#COPY install-magento.sh /usr/local/bin/install-magento.sh
+#RUN chmod +x /usr/local/bin/install-magento.sh
+
+#===============================
+# 7️⃣ Exponer puerto y ejecutar
+# ===============================
+EXPOSE 80
+#CMD ["/usr/local/bin/install-magento.sh"]

@@ -8,7 +8,8 @@ echo "2) WordPress"
 echo "3) OpenCart"
 echo "4) Apache Local"
 echo "5) Joomla"
-echo "6) Todos los servicios (sin ngrok)"
+echo "6) Magento"
+echo "7) Todos los servicios (sin ngrok)"
 echo ""
 read -p "Selecciona una opción (1-5): " choice
 
@@ -34,6 +35,10 @@ case $choice in
     docker-compose restart joomla
     echo "✅ Todos los servicios han sido reseteados";;
   6)
+    echo "🛑 Deteniendo todos los servicios..."
+    docker-compose restart magento
+    echo "✅ Todos los servicios han sido reseteados";;
+  7)
     echo "🛑 Deteniendo todos los servicios..."
     docker-compose restart
     echo "✅ Todos los servicios han sido reseteados";;
