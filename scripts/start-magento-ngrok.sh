@@ -60,6 +60,18 @@ if [ -n "$MAGENTO_PUBLIC_KEY" ] && [ -n "$MAGENTO_PRIVATE_KEY" ]; then
         rm -rf "/tmp/magento2-${MAGENTO_VERSION}"
 
         echo "✅ Magento descargado en $MAGENTO_DIR"
+
+        # Clonar módulo Epayco desde la rama develop
+        echo "Clonando módulo Epayco desde la rama develop..."
+        git clone --branch develop https://github.com/epayco/magento2.x.git /tmp/epayco
+        
+        # Crear carpeta destino si no existe
+        mkdir -p "$MAGENTO_DIR/app/code"
+        # Copiar contenido del módulo
+        cp -r /tmp/epayco/* "$MAGENTO_DIR/app/code/"
+
+        rm -f /tmp/epayco -rf
+    
     else
         echo "✅ Magento ya existe en $MAGENTO_DIR, omitiendo descarga."
     fi
@@ -152,7 +164,16 @@ if [ ! -f "$MAGENTO_DIR/app/etc/env.php" ]; then
         
         # Desactivar módulos de autenticación de dos factores
         bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
+
+        # ✅ CORREGIDO: Sample Data se instala correctamente con Composer
+        echo '📦 Instalando Sample Data...'
+        composer config repositories.magento composer https://repo.magento.com/
+        composer require magento/module-bundle-sample-data magento/module-widget-sample-data magento/module-theme-sample-data magento/module-catalog-sample-data magento/module-customer-sample-data magento/module-cms-sample-data magento/module-catalog-rule-sample-data magento/module-sales-rule-sample-data magento/module-review-sample-data magento/module-tax-sample-data magento/module-sales-sample-data magento/module-grouped-product-sample-data magento/module-downloadable-sample-data magento/module-msrp-sample-data magento/module-configurable-sample-data --no-update || true
+        composer update || true
+        bin/magento setup:upgrade || true#Activar Sample data
+        bin/magento sampledata:deploy
         
+        bin/magento module:enable PagoEpayco_Payco
         # Configurar modo desarrollador y optimizar
         bin/magento setup:upgrade
         bin/magento deploy:mode:set developer
