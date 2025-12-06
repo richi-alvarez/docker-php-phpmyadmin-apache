@@ -231,6 +231,21 @@ services:
                 condition: service_healthy
         networks:
         - local-network
+    
+    ngrok-magento:
+        image: ngrok/ngrok:latest
+        container_name: ngrok
+        restart: always
+        depends_on:
+           - magento
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "magento:80"]
+        ports:
+            - "4045:4040" # ngrok web UI
+        networks:
+            - local-network
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
