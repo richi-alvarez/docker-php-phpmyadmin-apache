@@ -71,8 +71,11 @@ RUN chmod 0644 /etc/cron.d/my-cron
 # ===============================
 # 7️⃣ Script de inicio
 # ===============================
-COPY docker/start.sh /start.sh
-RUN chmod +x /start.sh    
+#COPY docker/start.sh /start.sh
+#RUN chmod +x /start.sh    
+
+COPY scripts/start-with-ngrok-choice.sh /start-with-ngrok-choice.sh
+RUN chmod +x /start-with-ngrok-choice.sh
 
 # ===============================
 # 8️⃣ Crear carpeta logs y permisos
@@ -89,4 +92,4 @@ RUN a2enmod headers rewrite
 # ===============================
 # 🔟 Iniciar servicios
 # ===============================
-CMD ["/start.sh"]
+CMD ["/start-with-ngrok-choice.sh"]
