@@ -3,7 +3,8 @@ services:
     mysql:
         #container_name: mysql
         #image: mariadb:10.6.4-focal
-        image: mysql:5.7
+        #image: mysql:5.7
+        image: mysql:5.2
         restart: always
         ports: 
             - "3308:3306"
@@ -110,6 +111,21 @@ services:
             - local-network
         volumes:
             - ./www/joomla:/var/www/html
+
+    ngrok-joomla:
+        image: ngrok/ngrok:latest
+        container_name: ngrok
+        restart: always
+        depends_on:
+           - joomla
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "joomla:80"]
+        ports:
+            - "4043:4040" # ngrok web UI
+        networks:
+            - local-network
 
     prestashop:
         container_name: prestashop
