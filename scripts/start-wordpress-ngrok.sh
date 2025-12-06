@@ -21,7 +21,7 @@ echo "⏳ Esperando que Wordpress esté listo..."
 sleep 25
 
 echo "🌐 Iniciando ngrok para WordPress..."
-docker-compose up -d ngrok
+docker-compose up -d ngrok-wordpress
 
 echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4041)..."
 sleep 10

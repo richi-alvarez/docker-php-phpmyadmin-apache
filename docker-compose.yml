@@ -76,6 +76,21 @@ services:
         volumes:
             - ./www/wordpress:/var/www/html
             - ./config/php.ini:/usr/local/etc/php/conf.d/php.ini
+
+    ngrok-wordpress:
+        image: ngrok/ngrok:latest
+        container_name: ngrok
+        restart: always
+        depends_on:
+           - wordpress
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "wordpress:80"]
+        ports:
+            - "4041:4040" # ngrok web UI
+        networks:
+            - local-network
     
     joomla:
         container_name: joomla
