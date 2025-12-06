@@ -42,7 +42,7 @@ get_ngrok_url() {
     local ngrok_url=""
     
     while [ $attempts -lt $max_attempts ]; do
-        ngrok_url=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
+        ngrok_url=$(curl -s http://localhost:4041/api/tunnels 2>/dev/null \
             | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
         
         if [ -n "$ngrok_url" ]; then
@@ -62,7 +62,7 @@ NGROK_URL=$(get_ngrok_url)
 if [ -z "$NGROK_URL" ]; then
   echo "❌ Error: no se obtuvo la URL de ngrok."
   echo "📋 Logs de ngrok:"
-  docker-compose logs --tail=20 ngrok
+  docker-compose logs --tail=20 ngrok-wordpress
   exit 1
 fi
 

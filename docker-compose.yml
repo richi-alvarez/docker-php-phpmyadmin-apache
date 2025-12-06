@@ -65,7 +65,11 @@ services:
             - local-network
 
     wordpress:
-        container_name: wordpress
+        build:
+            context: .
+            dockerfile: DockerfileWordpress
+        env_file:
+            - ./docker/api.env
         image: wordpress:latest
         restart: unless-stopped
         depends_on:
