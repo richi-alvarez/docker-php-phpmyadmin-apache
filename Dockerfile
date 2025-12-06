@@ -2,54 +2,56 @@ FROM php:8.4-apache
 
 # Variables de entorno para versiones de Apache y dependencias
 ARG DEBIAN_FRONTEND=noninteractive
-# Install dependencies
+ARG APACHE_VERSION=2.4.59
+ARG APR_VERSION=1.7.4
+ARG APR_UTIL_VERSION=1.6.3
+
+WORKDIR /var/www/html
+# Mostrar versiones durante el build
+RUN echo "Apache: ${APACHE_VERSION}, APR: ${APR_VERSION}, APR-util: ${APR_UTIL_VERSION}"
+
+# Instalar dependencias necesarias
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
+    libssl-dev \
     unzip \
-    git \
-    curl \
-    zlib1g-dev \
-    libjpeg-dev
+    wait-for-it \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    libcurl3-dev \
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) gd zip mysqli curl \
+    && docker-php-ext-enable gd zip mysqli curl \
+    && rm -r /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
-    docker-php-ext-install gd
+# Actualizar PATH para incluir Apache compilado
+ENV PATH="/usr/local/apache2/bin:$PATH"
 
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+# Instalar extensiones
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl
 
-RUN docker-php-ext-configure zip --with-libzip && \
-    docker-php-ext-install zip
+# Establecer archivo ini
+RUN ln -s $PHP_INI_DIR/php.ini $PHP_INI_DIR/php.ini
+# Instalar y configurar Xdebug
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+#RUN install-php-extensions xdebug && docker-php-ext-enable xdebug
+#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-# Install extensions
-RUN docker-php-ext-install mysqli mbstring exif pcntl bcmath zip
-RUN docker-php-source delete
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install composer
+# ===============================
+# 2️⃣ Instalar Composer
+# ===============================
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN curl -sS https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
-RUN git config --global user.email "user@email.com" \
-    && git config --global user.name "user name"
-
-RUN pecl install -f xdebug apcu \
-    && docker-php-ext-enable xdebug apcu
-
+# ===============================
+# 3️⃣ Instalar y habilitar Xdebug
+# ===============================
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-<<<<<<< HEAD
 #install node
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
@@ -59,7 +61,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt update && apt install yarn
 WORKDIR /var/www/html
 RUN a2enmod rewrite
-=======
+
 # ===============================
 # 4️⃣ Configuración PHP personalizada
 # ===============================
@@ -101,4 +103,3 @@ RUN a2enmod headers rewrite
 # 🔟 Iniciar servicios
 # ===============================
 CMD ["/start-with-ngrok-choice.sh"]
->>>>>>> d7c3d81 (feat:se aplican scripts de creacion de servicios)
