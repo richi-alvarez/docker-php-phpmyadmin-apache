@@ -21,7 +21,7 @@ echo "⏳ Esperando que PrestaShop esté listo..."
 sleep 25
 
 echo "🌐 Iniciando ngrok conectado a PrestaShop..."
-docker-compose up -d ngrok
+docker-compose up -d ngrok-prestashop
 
 echo "📡 Obteniendo URL de ngrok..."
 sleep 10
@@ -107,7 +107,7 @@ NGROK_URL=$(get_ngrok_url)
 if [ -z "$NGROK_URL" ]; then
     echo "❌ Error: no se obtuvo la URL de ngrok."
     echo "📋 Logs de ngrok:"
-    docker-compose logs --tail=20 ngrok
+    docker-compose logs --tail=20 ngrok-prestashop
     exit 1
 fi
 
