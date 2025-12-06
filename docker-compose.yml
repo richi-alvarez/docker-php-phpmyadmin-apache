@@ -49,6 +49,21 @@ services:
         networks:
             - local-network
     
+    ngrok:
+        image: ngrok/ngrok:latest
+        container_name: ngrok
+        restart: always
+        depends_on:
+           - local
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "local:80"]
+        ports:
+            - "4040:4040" # ngrok web UI
+        networks:
+            - local-network
+
     wordpress:
         container_name: wordpress
         image: wordpress:latest
@@ -123,7 +138,7 @@ services:
             NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
         command: ["http", "joomla:80"]
         ports:
-            - "4043:4040" # ngrok web UI
+            - "4042:4040" # ngrok web UI
         networks:
             - local-network
 
@@ -179,7 +194,7 @@ services:
             NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
         command: ["http", "prestashop:80"]
         ports:
-            - "4042:4040" # ngrok web UI
+            - "4043:4040" # ngrok web UI
         networks:
             - local-network
 
@@ -216,7 +231,22 @@ services:
             chmod -R 755 /var/www/html &&
             apache2-foreground
             "
-    
+
+    ngrok-opencart:
+        image: ngrok/ngrok:latest
+        container_name: ngrok
+        restart: always
+        depends_on:
+           - opencart
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "opencart:80"]
+        ports:
+            - "4044:4040" # ngrok web UI
+        networks:
+            - local-network
+
     magento:
         build:
             context: .
@@ -290,21 +320,6 @@ services:
             timeout: 10s
             retries: 30
 
-
-    ngrok:
-        image: ngrok/ngrok:latest
-        container_name: ngrok
-        restart: always
-        depends_on:
-           - local
-        environment:
-            # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
-        command: ["http", "local:80"]
-        ports:
-            - "4040:4040" # ngrok web UI
-        networks:
-            - local-network
 
 volumes:
     psdata:
