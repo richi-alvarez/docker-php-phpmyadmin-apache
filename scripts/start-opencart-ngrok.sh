@@ -94,7 +94,7 @@ echo "⏳ Esperando que Opencart esté listo..."
 sleep 25
 
 echo "🌐 Iniciando ngrok conectado a Opencart..."
-docker-compose up -d ngrok
+docker-compose up -d ngrok-opencart
 
 echo "📡 Obteniendo URL de ngrok..."
 sleep 10
@@ -135,7 +135,7 @@ NGROK_URL=$(get_ngrok_url)
 if [ -z "$NGROK_URL" ]; then
   echo "❌ Error: no se obtuvo la URL de ngrok."
   echo "📋 Logs de ngrok:"
-  docker-compose logs --tail=20 ngrok
+  docker-compose logs --tail=20 ngrok-opencart
   exit 1
 fi
 
@@ -155,7 +155,7 @@ echo ""
 echo "📋 URLs disponibles:"
 echo "🛒 Tienda OpenCart:      $NGROK_URL"
 echo "⚙️  Admin OpenCart:       $NGROK_URL/admin/"
-echo "🌐 Ngrok Dashboard:      http://localhost:4042"
+echo "🌐 Ngrok Dashboard:      http://localhost:4044"
 echo "🗄️  phpMyAdmin:          http://localhost:8089"
 echo "🐳 Apache Local:         http://localhost:86"
 echo "🛒 PrestaShop Local:     http://localhost:8082"
