@@ -87,7 +87,7 @@ echo "⏳ Esperando que Magento esté listo..."
 sleep 30
 
 echo "🌐 Iniciando ngrok conectado a Magento..."
-docker-compose up -d ngrok
+docker-compose up -d ngrok-magento
 
 echo "📡 Obteniendo URL de ngrok..."
 sleep 10
@@ -128,7 +128,7 @@ NGROK_URL=$(get_ngrok_url)
 if [ -z "$NGROK_URL" ]; then
   echo "❌ Error: no se obtuvo la URL de ngrok."
   echo "📋 Logs de ngrok:"
-  docker-compose logs --tail=20 ngrok
+  docker-compose logs --tail=20 ngrok-magento
   exit 1
 fi
 
@@ -252,7 +252,7 @@ echo ""
 echo "📋 URLs disponibles:"
 echo "🛒 Tienda Magento:       $NGROK_URL"
 echo "⚙️  Admin Magento:        $NGROK_URL$ADMIN_URI"
-echo "🌐 Ngrok Dashboard:       http://localhost:4041"
+echo "🌐 Ngrok Dashboard:       http://localhost:4045"
 echo "🗄️  phpMyAdmin:           http://localhost:8089"
 echo "🐳 Apache Local:          http://localhost:86"
 echo "🛒 PrestaShop Local:      http://localhost:8082"
