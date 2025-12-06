@@ -71,7 +71,7 @@ services:
         depends_on:
             - mysql
         ports:
-            - 8083:80
+            - 8081:80
         environment:
             WORDPRESS_DB_HOST: mysql
             WORDPRESS_DB_NAME: wordpress
@@ -115,8 +115,8 @@ services:
         restart: unless-stopped
         depends_on:
             - mysql
-        #ports:
-            #- 8084:80
+        ports:
+            - 8082:80
         environment:
             JOOMLA_DB_HOST: mysql
             JOOMLA_DB_NAME: joomla
@@ -148,8 +148,8 @@ services:
         restart: unless-stopped
         depends_on:
             - mysql
-        #ports:
-            #- 8082:80
+        ports:
+            - 8083:80
         environment:
             DB_SERVER: mysql
             DB_NAME: prestashop
@@ -208,7 +208,7 @@ services:
         depends_on:
             - mysql
         ports:
-            - 80:80
+            - 84:80
         environment:
             XDEBUG_CLIENT_HOST: 172.17.0.1
             XDEBUG_CLIENT_PORT: 9004
