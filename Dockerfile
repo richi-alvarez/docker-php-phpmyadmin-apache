@@ -49,6 +49,7 @@ RUN pecl install -f xdebug apcu \
 
 COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
+<<<<<<< HEAD
 #install node
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
@@ -58,3 +59,46 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt update && apt install yarn
 WORKDIR /var/www/html
 RUN a2enmod rewrite
+=======
+# ===============================
+# 4️⃣ Configuración PHP personalizada
+# ===============================
+COPY config/php.ini /usr/local/etc/php/
+
+# ===============================
+# 5️⃣ Copiar código del proyecto
+# ===============================
+COPY www/ /var/www/html
+
+# ===============================
+# 6️⃣ Configurar cron jobs
+# ===============================
+COPY docker/cronjobs/my-cron /etc/cron.d/my-cron
+RUN chmod 0644 /etc/cron.d/my-cron
+
+# ===============================
+# 7️⃣ Script de inicio
+# ===============================
+#COPY docker/start.sh /start.sh
+#RUN chmod +x /start.sh    
+
+COPY scripts/start-with-ngrok-choice.sh /start-with-ngrok-choice.sh
+RUN chmod +x /start-with-ngrok-choice.sh
+
+# ===============================
+# 8️⃣ Crear carpeta logs y permisos
+# ===============================
+RUN mkdir -p /var/www/html/logs \
+    && chown -R www-data:www-data /var/www/html/logs \
+    && chmod -R 775 /var/www/html/logs
+
+# ===============================
+# 9️⃣ Configurar Apache
+# ===============================
+RUN a2enmod headers rewrite
+
+# ===============================
+# 🔟 Iniciar servicios
+# ===============================
+CMD ["/start-with-ngrok-choice.sh"]
+>>>>>>> d7c3d81 (feat:se aplican scripts de creacion de servicios)
