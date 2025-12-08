@@ -53,12 +53,14 @@ RUN pecl install xdebug && docker-php-ext-enable xdebug
 COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 #install node
-RUN curl -sL https://deb.nodesource.com/setup_22.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 #install yarn
-# RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-# RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-# RUN apt update && apt install yarn
+RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt update && apt install yarn
+WORKDIR /var/www/html
+RUN a2enmod rewrite
 
 # ===============================
 # 4️⃣ Configuración PHP personalizada
@@ -100,4 +102,4 @@ RUN a2enmod headers rewrite
 # ===============================
 # 🔟 Iniciar servicios
 # ===============================
-#CMD ["/start-with-ngrok-choice.sh"]
+CMD ["/start-with-ngrok-choice.sh"]

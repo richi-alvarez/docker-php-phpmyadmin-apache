@@ -3,8 +3,8 @@ services:
     mysql:
         #container_name: mysql
         #image: mariadb:10.6.4-focal
-        image: mysql:5.7
-        #image: mysql:5.2
+        #image: mysql:5.7
+        image: mysql:5.2
         restart: always
         ports: 
             - "3308:3306"
@@ -99,7 +99,7 @@ services:
 
     ngrok-wordpress:
         image: ngrok/ngrok:latest
-        container_name: ngrok-wordpress
+        container_name: ngrok
         restart: always
         depends_on:
            - wordpress
@@ -133,7 +133,7 @@ services:
 
     ngrok-joomla:
         image: ngrok/ngrok:latest
-        container_name: ngrok-joomla
+        container_name: ngrok
         restart: always
         depends_on:
            - joomla
@@ -189,7 +189,7 @@ services:
 
     ngrok-prestashop:
         image: ngrok/ngrok:latest
-        container_name: ngrok-prestashop
+        container_name: ngrok
         restart: always
         depends_on:
            - prestashop
@@ -238,7 +238,7 @@ services:
 
     ngrok-opencart:
         image: ngrok/ngrok:latest
-        container_name: ngrok-opencart
+        container_name: ngrok
         restart: always
         depends_on:
            - opencart
@@ -284,7 +284,7 @@ services:
     
     ngrok-magento:
         image: ngrok/ngrok:latest
-        container_name: ngrok-magento
+        container_name: ngrok
         restart: always
         depends_on:
            - magento
