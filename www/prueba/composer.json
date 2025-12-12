@@ -1,0 +1,24 @@
+{
+    "name": "prueba/omnipay",
+    "description": "prueba de pagos en omnipay",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Epayco\\Payment\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ricardo saldarriaga"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

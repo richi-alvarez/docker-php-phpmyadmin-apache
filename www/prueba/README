@@ -1,0 +1,30 @@
+# Proyecto Prueba - Integración Omnipay Epayco
+
+Este repositorio contiene una implementación mínima para controlar métodos de pago usando un patrón extensible (Factory / Manager / Strategy).
+
+Estructura principal (carpeta `src`):
+
+```
+src/
+├─ PaymentManager.php                      # Adaptador/servicio público (namespace: Prueba\Omnipay\Payment)
+├─ guia.md                          # Documentación breve
+└─ Payments/                        # Implementaciones y contratos internos (namespace: Prueba\Omnipay\Payments)
+   ├─ AbstractPaymentMethod.php     # Base abstracta con helpers y validaciones
+   ├─ EpaycoMethod.php              # Implementación concreta para ePayco
+   ├─ MessageInterface.php          # Interfaz base de mensaje
+   ├─ PaymentMethodFactory.php      # Fábrica para crear métodos de pago
+   ├─ PaymentMethodInterface.php    # Contrato para métodos de pago (validate, buildPayload, send)
+   ├─ PaymentMethodManager.php      # Registry/manager para registrar y obtener métodos
+   └─ ResponseInterface.php         # Interfaz de respuesta local
+```
+
+Namespaces relevantes:
+
+- `Prueba\Omnipay\Payment` — adaptador público usado desde código fuera del namespace (p.ej. `index.php`).
+- `Prueba\Omnipay\Payments` — implementación interna, registros y contratos.
+
+Uso rápido:
+- Asegúrate de que Composer autoload está configurado y ejecuta `composer dump-autoload` si añades clases.
+- Desde `index.php` puedes instanciar el servicio: `new \Prueba\Omnipay\Payment\Payment($config)` o usar el adaptador según el ejemplo en este repositorio.
+
+Si quieres que incluya instrucciones para configurar PSR-4 en `composer.json` o ejemplos adicionales, indícalo y lo añado.
