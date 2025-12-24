@@ -38,3 +38,10 @@ kubectl rollout restart statefulset/dev-mysql
 kubectl apply -f k8s/dev-stack-secrets.yaml
 kubectl rollout restart statefulset/dev-mysql
 kubectl apply -f k8s/dev-ingress.yaml
+
+eval $(minikube docker-env)
+docker build -t apache-local:latest -f ./Dockerfile .
+eval $(minikube docker-env -u)
+# recrear pods para que tomen la imagen existente
+kubectl rollout restart deployment/dev-stack-deployment || kubectl delete pod -l app=dev-stack
+kubectl get pods -w
