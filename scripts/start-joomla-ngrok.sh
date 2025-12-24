@@ -2,8 +2,10 @@
 # filepath: ./scripts/start-joomla-ngrok.sh
 set -e
 
+JOOMLA_DIR="./www/joomla"
+
 echo "🚀 Iniciando MySQL..."
-docker-compose up -d mysql
+docker-compose up -d mysql-joomla
 
 echo "⏳ Esperando que MySQL esté listo..."
 sleep 15
@@ -14,6 +16,30 @@ docker-compose up -d phpmyadmin
 echo "⏳ Esperando que phpMyAdmin esté listo..."
 sleep 15
 
+# Verificar si el directorio de Joomla existe
+if [ ! -d "$JOOMLA_DIR" ]; then
+    echo "📁 Creando directorio Joomla..."
+    mkdir -p "$JOOMLA_DIR"
+fi
+
+# Instalar Magento solo si no existe
+if [ -z "$(ls -A $JOOMLA_DIR 2>/dev/null)" ]; then
+    echo "📥 Instalando Magento en $JOOMLA_DIR..."
+
+    JOOMLA_VERSION="5.4.1"
+    curl -L "https://github.com/joomla/joomla-cms/archive/refs/tags/${JOOMLA_VERSION}.tar.gz" -o /tmp/joomla.tar.gz
+
+    echo "📦 Extrayendo Joomla..."
+    tar -xzf /tmp/joomla.tar.gz -C /tmp/
+
+    # Mover archivos
+    cp -r "/tmp/joomla-cms-${JOOMLA_VERSION}/"* "$JOOMLA_DIR/"
+
+    # Limpiar
+    rm -f /tmp/joomla.tar.gz
+    rm -rf "/tmp/joomla-cms-${JOOMLA_VERSION}"
+fi
+
 echo "🛒 Iniciando Joomla..."
 docker-compose up -d joomla
 
@@ -23,7 +49,7 @@ sleep 25
 echo "🌐 Iniciando ngrok para Joomla..."
 docker-compose up -d ngrok-joomla
 
-echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4041)..."
+echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4042)..."
 sleep 10
 # NGROK_URL=""
 # for i in $(seq 1 30); do
@@ -42,7 +68,7 @@ get_ngrok_url() {
     local ngrok_url=""
     
     while [ $attempts -lt $max_attempts ]; do
-        ngrok_url=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
+        ngrok_url=$(curl -s http://localhost:4042/api/tunnels 2>/dev/null \
             | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
         
         if [ -n "$ngrok_url" ]; then
@@ -69,6 +95,32 @@ echo "🏷️  URL configurada: $NGROK_URL"
 
 DOMAIN=$(echo "$NGROK_URL" | sed 's|https://||; s|http://||')
 echo "🏷️  Configurando Joomla para usar solo: $DOMAIN"
+
+# Verificar si Joomla ya está instalado
+if [ ! -f "$JOOMLA_DIR/configuration.php" ]; then
+    echo "🔧 Instalando y configurando Joomla..."
+
+    # Ejecutar comando de instalación de Joomla
+    docker-compose exec -T joomla bash -c "
+    cd /var/www/html
+
+    #instalar paquetes necesarios
+    composer install
+    #php cli/install.php --db-type mysqli --db-host mysql --db-user root --db-pass test --db-name joomla --admin-user admin --admin-pass admin123 --admin-email admin@example.com
+    npm ci
+    # Configurar el dominio en la base de datos
+    #mysql -u root -ptest joomla << EOF
+    #    UPDATE jos_sites SET domain = '$DOMAIN' WHERE id = 1;
+    #EOF
+"
+else
+    echo "✅ Joomla ya está instalado. Actualizando configuración del dominio..."
+
+    # Actualizar configuración del dominio en la base de datos
+#     docker-compose exec -T mysql-joomla mysql -u root -ptest joomla << EOF
+# UPDATE jos_sites SET domain = '$DOMAIN' WHERE id = 1;
+# EOF
+fi
 
 echo ""
 echo "🎉 Joomla configurado exitosamente con ngrok!"

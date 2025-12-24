@@ -108,7 +108,7 @@ get_ngrok_url() {
     local ngrok_url=""
     
     while [ $attempts -lt $max_attempts ]; do
-        ngrok_url=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
+        ngrok_url=$(curl -s http://localhost:4045/api/tunnels 2>/dev/null \
             | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
         
         if [ -n "$ngrok_url" ]; then

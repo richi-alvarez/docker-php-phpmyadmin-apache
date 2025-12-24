@@ -3,8 +3,8 @@ services:
     mysql:
         #container_name: mysql
         #image: mariadb:10.6.4-focal
-        #image: mysql:5.7
-        image: mysql:5.2
+        image: mysql:5.7
+        #image: mysql:5.5
         restart: always
         ports: 
             - "3308:3306"
@@ -19,7 +19,7 @@ services:
             - ./mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
             - ./mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
             - ./mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
-            - ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
+            #- ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
             - ./mysql/init-magento.sql:/docker-entrypoint-initdb.d/init-magento.sql
             #- ./conf:/etc/mysql/conf.d
             - persistent:/var/lib/mysql
@@ -30,12 +30,37 @@ services:
             interval: 10s
             timeout: 5s
             retries: 10
+
+    mysql-joomla:
+        image: mysql:8.0
+        restart: always
+        container_name: mysql-joomla
+        ports: 
+            - "3309:3306"
+        command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
+        #command: --default-authentication-plugin=caching_sha2_password
+        environment:
+            MYSQL_DATABASE: joomla
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+            #MYSQL_USER: root
+        volumes:
+            - ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
+            - mysql_joomla_data:/var/lib/mysql
+        networks:
+            - local-network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptest"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+
     local:
         build: .
         container_name: local
         restart: always
         ports: 
-            - "86:80"
+            - "80:80"
         volumes:
             - ./www:/var/www/html
             #- ./config:/usr/local/etc/php
@@ -65,25 +90,25 @@ services:
             - local-network
 
     wordpress:
-        build:
-            context: .
-            dockerfile: DockerfileWordpress
+        #build:
+        #    context: .
+        #    dockerfile: DockerfileWordpress
         env_file:
             - ./docker/api.env
         image: wordpress:latest
         restart: unless-stopped
         depends_on:
             - mysql
-        ports:
-            - 8081:80
+        #ports:
+        #    - 8081:80
         environment:
             WORDPRESS_DB_HOST: mysql
             WORDPRESS_DB_NAME: wordpress
             WORDPRESS_DB_USER: root
             WORDPRESS_DB_PASSWORD: test
             # 🌐 Configuración para ngrok
-            WORDPRESS_HOME: "${WP_HOME:-http://localhost:8083}"
-            WORDPRESS_SITEURL: "${WP_SITEURL:-http://localhost:8083}"
+            #WORDPRESS_HOME: "${WP_HOME:-http://localhost:8081}"
+            #WORDPRESS_SITEURL: "${WP_SITEURL:-http://localhost:8081}"
             # Configuraciones adicionales
             WORDPRESS_DEBUG: 1
             WORDPRESS_CONFIG_EXTRA: |
@@ -99,7 +124,7 @@ services:
 
     ngrok-wordpress:
         image: ngrok/ngrok:latest
-        container_name: ngrok
+        container_name: ngrok-wordpress
         restart: always
         depends_on:
            - wordpress
@@ -114,15 +139,19 @@ services:
     
     joomla:
         container_name: joomla
-        #image: joomla:5.4.0
-        image: joomla:3.9.27
+        image: joomla:5.4.1
+        #image: joomla:3.9.27
+        #build:
+            #context: .
         restart: unless-stopped
         depends_on:
-            - mysql
+            #-  mysql-joomla
+            mysql-joomla:
+                condition: service_healthy
         ports:
-            - 8082:80
+            - 84:80
         environment:
-            JOOMLA_DB_HOST: mysql
+            JOOMLA_DB_HOST: mysql-joomla
             JOOMLA_DB_NAME: joomla
             JOOMLA_DB_USER: root
             JOOMLA_DB_PASSWORD: test
@@ -133,7 +162,7 @@ services:
 
     ngrok-joomla:
         image: ngrok/ngrok:latest
-        container_name: ngrok
+        container_name: ngrok-joomla
         restart: always
         depends_on:
            - joomla
@@ -174,9 +203,9 @@ services:
             #PS_SHOP_DOMAIN: "localhost:8082"
             #PS_SHOP_DOMAIN_SSL: "localhost:8082"
             #PS_SSL_ENABLED: 0
-            PS_DOMAIN: "${PS_DOMAIN:-localhost:8082}"
-            PS_SHOP_DOMAIN: "${PS_SHOP_DOMAIN:-localhost:8082}"
-            PS_SHOP_DOMAIN_SSL: "${PS_SHOP_DOMAIN_SSL:-localhost:8082}"
+            PS_DOMAIN: "${PS_DOMAIN:-localhost:8083}"
+            PS_SHOP_DOMAIN: "${PS_SHOP_DOMAIN:-localhost:8083}"
+            PS_SHOP_DOMAIN_SSL: "${PS_SHOP_DOMAIN_SSL:-localhost:8083}"
             PS_SSL_ENABLED: "${PS_SSL_ENABLED:-0}"
             PS_SSL_ENABLED_EVERYWHERE: "${PS_SSL_ENABLED_EVERYWHERE:-0}"
         networks:
@@ -189,13 +218,14 @@ services:
 
     ngrok-prestashop:
         image: ngrok/ngrok:latest
-        container_name: ngrok
+        container_name: ngrok-prestashop
         restart: always
         depends_on:
            - prestashop
         environment:
             # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+            #NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+            NGROK_AUTHTOKEN: "2feD4bEkSMBUEG8PWGh5TdGYm9g_4j8qQsLcUHviwdoVih1P4"
         command: ["http", "prestashop:80"]
         ports:
             - "4043:4040" # ngrok web UI
@@ -238,7 +268,7 @@ services:
 
     ngrok-opencart:
         image: ngrok/ngrok:latest
-        container_name: ngrok
+        container_name: ngrok-opencart
         restart: always
         depends_on:
            - opencart
@@ -284,13 +314,14 @@ services:
     
     ngrok-magento:
         image: ngrok/ngrok:latest
-        container_name: ngrok
+        container_name: ngrok-magento
         restart: always
         depends_on:
            - magento
         environment:
             # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+            NGROK_AUTHTOKEN: "36c0VpQR98sSi3LGxjZmDCDmjtE_dJ7rrPFbdP52fegMEpEU"
+            #NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
         command: ["http", "magento:80"]
         ports:
             - "4045:4040" # ngrok web UI
@@ -343,6 +374,7 @@ services:
 volumes:
     psdata:
     persistent: {}
+    mysql_joomla_data: {}
 
 networks:
     local-network:

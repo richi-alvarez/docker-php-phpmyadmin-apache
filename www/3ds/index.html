@@ -113,7 +113,7 @@
     <div id="responseThreds"></div>
   </div>
 
-  <script src="../scriptthreeds/dist/validateThreeds.min.js"></script>
+  <script src="https://multimedia-epayco-preprod.s3.amazonaws.com/general/3DS/validateThreeds.min.js"></script>
   <script>
     document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -128,11 +128,11 @@
         // Primera solicitud: Login para obtener el token
         const authResponse = await axios.post(`${API_BASE_URL}/login`, {}, {
           auth: {
-            username:"6f20bdfeb721ae83e332400e9cea7606",
-            password: "a885ac1803971c67e4a94b09a6413e19"
+            username:"485d5b188e7e9796c74cc9d7f64931fb",
+            password: "9ec0313c812b85d64fa5b017c392cf7c"
           }
         });
-
+        debugger;
         const token = authResponse.data.token;
         console.log('Creando transaccion');
         // Solicitud de pago

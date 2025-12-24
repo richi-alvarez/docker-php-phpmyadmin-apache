@@ -1,0 +1,40 @@
+# abrir docker env de minikube
+eval $(minikube docker-env)
+
+# construir la imagen dentro de minikube
+docker build -t local:dev -f ./Dockerfile .
+
+# volver al docker host original (opcional)
+eval $(minikube docker-env -u)
+
+minikube start --driver=docker
+minikube addons enable storage-provisioner
+
+
+kubectl get pods -w
+kubectl apply -f ./k8s/dev-stack-pod.yaml
+kubectl delete pod dev-stack-pod
+kubectl describe pod dev-stack-pod
+kubectl get pods -w
+kubectl logs dev-stack-pod -c wordpress
+kubectl logs dev-stack-pod -c phpmyadmin
+kubectl get events --sort-by='.metadata.creationTimestamp'k
+
+
+kubectl apply -f ./k8s/dev-stack-deployment.yam
+
+
+ubectl apply -f ./k8s/dev-stack-services.yaml
+kubectl get svc dev-stack-mysql dev-stack-local
+kubectl port-forward svc/dev-stack-local 30080:80 (si necesitas acceso local adicional)
+
+kubectl apply -f k8s/dev-stack-secrets.yaml
+kubectl apply -f k8s/dev-stack-deployment.yaml
+kubectl rollout restart deployment/dev-stack-deployment
+kubectl describe secret dev-mysql-secret
+
+kubectl rollout restart statefulset/dev-mysql
+
+kubectl apply -f k8s/dev-stack-secrets.yaml
+kubectl rollout restart statefulset/dev-mysql
+kubectl apply -f k8s/dev-ingress.yaml

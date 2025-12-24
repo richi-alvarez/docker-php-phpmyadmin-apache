@@ -1,4 +1,4 @@
-FROM php:8.4-apache
+FROM php:8.1-apache
 
 # Variables de entorno para versiones de Apache y dependencias
 ARG DEBIAN_FRONTEND=noninteractive
@@ -31,7 +31,7 @@ ENV PATH="/usr/local/apache2/bin:$PATH"
 
 # Instalar extensiones
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
-RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl
+RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl ldap
 
 # Establecer archivo ini
 RUN ln -s $PHP_INI_DIR/php.ini $PHP_INI_DIR/php.ini
@@ -49,18 +49,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # ===============================
 # 3️⃣ Instalar y habilitar Xdebug
 # ===============================
-RUN pecl install xdebug && docker-php-ext-enable xdebug
-COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 #install node
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get install -y nodejs
 #install yarn
-RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt update && apt install yarn
-WORKDIR /var/www/html
-RUN a2enmod rewrite
+# RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+# RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+# RUN apt update && apt install yarn
+
 
 # ===============================
 # 4️⃣ Configuración PHP personalizada
@@ -84,8 +83,8 @@ RUN chmod 0644 /etc/cron.d/my-cron
 #COPY docker/start.sh /start.sh
 #RUN chmod +x /start.sh    
 
-COPY scripts/start-with-ngrok-choice.sh /start-with-ngrok-choice.sh
-RUN chmod +x /start-with-ngrok-choice.sh
+#COPY scripts/start-with-ngrok-choice.sh /start-with-ngrok-choice.sh
+#RUN chmod +x /start-with-ngrok-choice.sh
 
 # ===============================
 # 8️⃣ Crear carpeta logs y permisos
@@ -99,7 +98,4 @@ RUN mkdir -p /var/www/html/logs \
 # ===============================
 RUN a2enmod headers rewrite
 
-# ===============================
-# 🔟 Iniciar servicios
-# ===============================
-CMD ["/start-with-ngrok-choice.sh"]
+

@@ -79,3 +79,8 @@ docker run -it --rm -d -p 8080:80 --name web sitioweb
 - --name: nombre del contenedor
 
 - Finalmente agregar el nombre de la imagen
+
+docker container ls | grep prestashop
+docker image ls | grep mysql
+docker volume ls | grep persistent
+Verificar que la variable esté presente dentro del contenedor Joomla:docker-compose exec joomla env | grep JOOMLA_DB_HOST

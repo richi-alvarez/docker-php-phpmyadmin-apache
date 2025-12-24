@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-mysql-headless
+  labels:
+    app: dev-mysql
+spec:
+  clusterIP: None
+  selector:
+    app: dev-mysql
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-mysql
+  labels:
+    app: dev-mysql
+spec:
+  type: ClusterIP
+  selector:
+    app: dev-mysql
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dev-mysql
+  labels:
+    app: dev-mysql
+spec:
+  serviceName: dev-mysql-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dev-mysql
+  template:
+    metadata:
+      labels:
+        app: dev-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dev-mysql-secret
+                  key: mysql-root-password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: dev-mysql-secret
+                  key: mysql-database
+            # - name: MYSQL_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: dev-mysql-secret
+            #       key: mysql-user
+            # - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dev-mysql-secret
+                  key: mysql-password
+          ports:
+            - name: mysql
+              containerPort: 3306
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -uroot -p"${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      terminationGracePeriodSeconds: 30
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+        labels:
+          app: dev-mysql
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: standard
