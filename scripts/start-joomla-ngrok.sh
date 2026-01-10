@@ -8,13 +8,13 @@ echo "🚀 Iniciando MySQL..."
 docker-compose up -d mysql-joomla
 
 echo "⏳ Esperando que MySQL esté listo..."
-sleep 15
+sleep 10
 
 echo "🚀 Iniciando phpMyAdmin..."
 docker-compose up -d phpmyadmin
 
 echo "⏳ Esperando que phpMyAdmin esté listo..."
-sleep 15
+sleep 10
 
 # Verificar si el directorio de Joomla existe
 if [ ! -d "$JOOMLA_DIR" ]; then
@@ -44,31 +44,20 @@ echo "🛒 Iniciando Joomla..."
 docker-compose up -d joomla
 
 echo "⏳ Esperando que Joomla esté listo..."
-sleep 25
-
-echo "🌐 Iniciando ngrok para Joomla..."
-docker-compose up -d ngrok-joomla
-
-echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4042)..."
 sleep 10
-# NGROK_URL=""
-# for i in $(seq 1 30); do
-#   NGROK_URL=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
-#     | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
-#   if [ -n "$NGROK_URL" ]; then
-#     echo "✅ URL de ngrok encontrada: $NGROK_URL"
-#     break
-#   fi
-#   echo "  🔄 Intento $i/30..."
-#   sleep 3
-# done
+
+#echo "🌐 Iniciando ngrok para Joomla..."
+#docker-compose up -d ngrok-joomla
+
+echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4044)..."
+
 get_ngrok_url() {
     local attempts=0
     local max_attempts=30
     local ngrok_url=""
     
     while [ $attempts -lt $max_attempts ]; do
-        ngrok_url=$(curl -s http://localhost:4042/api/tunnels 2>/dev/null \
+        ngrok_url=$(curl -s http://localhost:4044/api/tunnels 2>/dev/null \
             | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
         
         if [ -n "$ngrok_url" ]; then
@@ -90,6 +79,7 @@ if [ -z "$NGROK_URL" ]; then
   docker-compose logs --tail=20 ngrok-joomla
   exit 1
 fi
+#NGROK_URL="https://yea-commerce-screenshot-packing.trycloudflare.com"
 
 echo "🏷️  URL configurada: $NGROK_URL"
 
@@ -128,6 +118,6 @@ echo ""
 echo "📋 URLs disponibles:"
 echo "🌐 Joomla Sitio:      $NGROK_URL"
 echo "⚙️  Joomla Admin:      $NGROK_URL/administrator"
-echo "🌐 Ngrok Dashboard:      http://localhost:4042"
+echo "🌐 Ngrok Dashboard:      http://localhost:4044"
 echo "🗄️  phpMyAdmin:          http://localhost:8089"
 echo "🛒 Joomla Local:     http://localhost:8082"

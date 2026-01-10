@@ -19,7 +19,7 @@ services:
             - ./mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
             - ./mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
             - ./mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
-            #- ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
+            - ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
             - ./mysql/init-magento.sql:/docker-entrypoint-initdb.d/init-magento.sql
             #- ./conf:/etc/mysql/conf.d
             - persistent:/var/lib/mysql
@@ -30,6 +30,40 @@ services:
             interval: 10s
             timeout: 5s
             retries: 10
+
+    local:
+        build: .
+        container_name: local
+        restart: always
+        ports: 
+            - "80:80"
+        volumes:
+            - ./www:/var/www/html
+            #- ./config:/usr/local/etc/php
+            #- ./php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        environment:
+            XDEBUG_CLIENT_HOST: 172.17.0.1
+            XDEBUG_CLIENT_PORT: 9004
+            PHP_IDE_CONFIG: serverName=local-server
+        links:
+            - mysql
+        networks:
+            - local-network
+    
+    ngrok:
+        image: ngrok/ngrok:latest
+        container_name: ngrok
+        restart: always
+        depends_on:
+           - local
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "local:80"]
+        ports:
+            - "4040:4040" # ngrok web UI
+        networks:
+            - local-network
 
     mysql-joomla:
         image: mysql:8.0
@@ -55,37 +89,42 @@ services:
             timeout: 5s
             retries: 10
 
-    local:
-        build: .
-        container_name: local
-        restart: always
-        ports: 
-            - "80:80"
-        volumes:
-            - ./www:/var/www/html
-            #- ./config:/usr/local/etc/php
-            - ./php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    joomla:
+        container_name: joomla
+        #image: joomla:5.4.1
+        #image: joomla:3.9.27
+        build:
+            context: .
+            dockerfile: DockerfileJoomla
+        restart: unless-stopped
+        depends_on:
+            mysql-joomla:
+                condition: service_healthy
+        ports:
+            - 84:80
         environment:
-            XDEBUG_CLIENT_HOST: 172.17.0.1
-            XDEBUG_CLIENT_PORT: 9004
-            PHP_IDE_CONFIG: serverName=local-server
-        links:
-            - mysql
+            JOOMLA_DB_HOST: mysql-joomla
+            JOOMLA_DB_NAME: joomla
+            JOOMLA_DB_USER: root
+            JOOMLA_DB_PASSWORD: test
         networks:
             - local-network
-    
-    ngrok:
+        volumes:
+            - ./www/joomla:/var/www/html
+
+    ngrok-joomla:
         image: ngrok/ngrok:latest
-        container_name: ngrok
+        container_name: ngrok-joomla
         restart: always
         depends_on:
-           - local
+           - joomla
         environment:
             # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
-        command: ["http", "local:80"]
+            #NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+            NGROK_AUTHTOKEN: "1sOeDncqDzLcjK5FomCsS130TGu_3v67ByFwBgSSJdgicEPQd"
+        command: ["http", "joomla:80"]
         ports:
-            - "4040:4040" # ngrok web UI
+            - "4044:4040" # ngrok web UI
         networks:
             - local-network
 
@@ -99,8 +138,8 @@ services:
         restart: unless-stopped
         depends_on:
             - mysql
-        #ports:
-        #    - 8081:80
+        ports:
+            - 80:80
         environment:
             WORDPRESS_DB_HOST: mysql
             WORDPRESS_DB_NAME: wordpress
@@ -130,50 +169,39 @@ services:
            - wordpress
         environment:
             # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+            #NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+            NGROK_AUTHTOKEN: "36c0VpQR98sSi3LGxjZmDCDmjtE_dJ7rrPFbdP52fegMEpEU"
         command: ["http", "wordpress:80"]
         ports:
             - "4041:4040" # ngrok web UI
         networks:
             - local-network
-    
-    joomla:
-        container_name: joomla
-        image: joomla:5.4.1
-        #image: joomla:3.9.27
-        #build:
-            #context: .
-        restart: unless-stopped
-        depends_on:
-            #-  mysql-joomla
-            mysql-joomla:
-                condition: service_healthy
-        ports:
-            - 84:80
-        environment:
-            JOOMLA_DB_HOST: mysql-joomla
-            JOOMLA_DB_NAME: joomla
-            JOOMLA_DB_USER: root
-            JOOMLA_DB_PASSWORD: test
-        networks:
-            - local-network
-        volumes:
-            - ./www/joomla:/var/www/html
 
-    ngrok-joomla:
-        image: ngrok/ngrok:latest
-        container_name: ngrok-joomla
+    mysql-prestashop:
+        container_name: mysql-prestashop
+        #image: mariadb:10.6.4-focal
+        image: mysql:5.7
+        #image: mysql:5.5
         restart: always
-        depends_on:
-           - joomla
+        ports: 
+            - "3301:3306"
+        command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
+        #command: --default-authentication-plugin=caching_sha2_password
         environment:
-            # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
-        command: ["http", "joomla:80"]
-        ports:
-            - "4042:4040" # ngrok web UI
+            MYSQL_DATABASE: prestashop
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+            #MYSQL_USER: root
+        volumes:
+            - ./mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
+            - persistent:/var/lib/mysql
         networks:
             - local-network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptest"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
 
     prestashop:
         container_name: prestashop
@@ -196,8 +224,10 @@ services:
             PS_COUNTRY: CO            # País por defecto
             PS_TIMEZONE: America/Bogota
             PS_CURRENCY: COP              # Moneda predeterminada (Peso Colombiano)
-            ADMIN_MAIL: admin@epayco.com  # 🔑 Usuario admin del Back Office
+            ADMIN_MAIL: admin@example.com  # 🔑 Usuario admin del Back Office
             ADMIN_PASSWD: admin123        # 🔑 Contraseña admin
+            #PS_ERASE_DB: 1
+            #PS_INSTALL_DB: 1
             # 🌐 Configuración para ngrok
             #PS_DOMAIN: "localhost:8082"
             #PS_SHOP_DOMAIN: "localhost:8082"
@@ -212,7 +242,7 @@ services:
         - local-network
         volumes:
         - ./www/prestashop/modules:/var/www/html/modules
-        - ./www/prestashop/themes/myTheme:/var/www/html/themes/myTheme
+        - ./www/prestashop/themes:/var/www/html/themes
         - psdata:/var/www/html
         - ./config/app.ini:/usr/local/etc/php/conf.d/app.ini
 
@@ -266,20 +296,20 @@ services:
             apache2-foreground
             "
 
-    ngrok-opencart:
-        image: ngrok/ngrok:latest
-        container_name: ngrok-opencart
-        restart: always
-        depends_on:
-           - opencart
-        environment:
-            # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
-        command: ["http", "opencart:80"]
-        ports:
-            - "4044:4040" # ngrok web UI
-        networks:
-            - local-network
+    # ngrok-opencart:
+    #     image: ngrok/ngrok:latest
+    #     container_name: ngrok-opencart
+    #     restart: always
+    #     depends_on:
+    #        - opencart
+    #     environment:
+    #         # Set NGROK_AUTHTOKEN in your shell or in a .env file
+    #         NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+    #     command: ["http", "opencart:80"]
+    #     ports:
+    #         - "4044:4040" # ngrok web UI
+    #     networks:
+    #         - local-network
 
     magento:
         build:
@@ -312,37 +342,37 @@ services:
         networks:
         - local-network
     
-    ngrok-magento:
-        image: ngrok/ngrok:latest
-        container_name: ngrok-magento
-        restart: always
-        depends_on:
-           - magento
-        environment:
-            # Set NGROK_AUTHTOKEN in your shell or in a .env file
-            NGROK_AUTHTOKEN: "36c0VpQR98sSi3LGxjZmDCDmjtE_dJ7rrPFbdP52fegMEpEU"
-            #NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
-        command: ["http", "magento:80"]
-        ports:
-            - "4045:4040" # ngrok web UI
-        networks:
-            - local-network
+    # ngrok-magento:
+    #     image: ngrok/ngrok:latest
+    #     container_name: ngrok-magento
+    #     restart: always
+    #     depends_on:
+    #        - magento
+    #     environment:
+    #         # Set NGROK_AUTHTOKEN in your shell or in a .env file
+    #         #NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+    #     command: ["http", "magento:80"]
+    #     ports:
+    #         - "4045:4040" # ngrok web UI
+    #     networks:
+    #         - local-network
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         links:
-            - mysql:mysql
+            - mysql-joomla:mysql-joomla
         ports:
             - 8089:80
         restart: always
         environment:
             PMA_ARBITRARY: 1
-            PMA_HOST: mysql
+            PMA_HOST: mysql-joomla
             MYSQL_USER: root
             MYSQL_PASSWORD: test
             MYSQL_ROOT_PASSWORD: test
         depends_on:
-            - mysql
+            mysql-joomla:
+                condition: service_healthy
         networks:
             - local-network
 
@@ -369,6 +399,16 @@ services:
             interval: 10s
             timeout: 10s
             retries: 30
+
+
+    redis:
+        image: redis:6.2
+        container_name: redis_shopify
+        ports:
+            - "6379:6379"
+        networks:
+            - local-network
+        restart: unless-stopped
 
 
 volumes:

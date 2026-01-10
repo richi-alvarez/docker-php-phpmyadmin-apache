@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://epayco.com/wp-content/uploads/2021/07/Favicon-ePayco-azul.png" sizes="32x32">
+    <!-- bootstrap 5 ccs -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <title>ePayco :: Checkout</title>
+</head>
+<header class="sticky-top">
+    <nav class="navbar navbar-dark bg-color">
+        <div class="container">
+            <a class="navbar-brand" href="https://www.epayco.com" target="_blank">
+                <img src="https://multimedia.epayco.co/epayco-landing/btns/epayco-logo-fondo-claro-lite.png" alt="epayco" width="150" class="d-inline-block align-text-top">
+            </a>
+        </div>
+    </nav>
+</header>
+
+<body class="bg-light">
+
+    <div class="container-xl container-fluid my-5">
+        <div class="row">
+            <div class="col-md-4 col-12 mb-2">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- <div class="row">
+                            <div class="mb-2 col-sm-12 col-md-12 col-xl-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="testProd">
+                                    <label class="form-check-label" for="testProd" id="labelTestProd">Prueba</label>
+                                </div>
+                            </div>
+                            <div class="mb-2 col-sm-12 col-md-12 col-xl-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="typeUx">
+                                    <label class="form-check-label" for="typeUx" id="labelTypeUx">OnePage</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-2 col-sm-12 col-md-12 col-xl-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="language">
+                                    <label class="form-check-label" for="language" id="labelLanguage">Español</label>
+                                </div>
+                            </div>
+                            <div class="mb-2 col-sm-12 col-md-12 col-xl-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="split">
+                                    <label class="form-check-label" for="split" id="labelSplit">Pago Normal</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-2 col-sm-12 col-md-12 col-xl-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="currency">
+                                    <label class="form-check-label" for="currency" id="labelCurrency">Pesos (COP)</label>
+                                </div>
+                            </div>
+                            <div class="mb-2 col-sm-12 col-md-12 col-xl-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="method">
+                                    <label class="form-check-label" for="method" id="labelMethod">POST</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-2">
+                                <label for="idClient" class="form-label">ID ePayco <span>*</span></label>
+                                <input type="text" class="form-control required" id="idClient" value="93006">
+                            </div>
+                        </div> -->
+                        <div class="row">
+                            <div class="mb-2">
+                                <label for="publicKey" class="form-label">Llave Publica ePayco <span>*</span></label>
+                                <input type="password" class="form-control required" id="publicKey">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-2">
+                                <label for="inputEmail" class="form-label">Ingrese Email <span>*</span></label>
+                                <input type="email" class="form-control required" list="email" id="inputEmail">
+                                <datalist id="email">
+                                    <option value="caguilar@epayco.com"></option>
+                                    <option value="claudia.osorno@epayco.com"></option>
+                                    <option value="daniela.gutierrez@epayco.com"></option>
+                                    <option value="durley.montoya@epayco.com"></option>
+                                    <option value="leidy.torres@epayco.com"></option>
+                                    <option value="monica.ramirez@epayco.com"></option>                                    
+                                </datalist>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="mb-2">
+                                <label for="urlResponse" class="form-label">URL Respuesta</label>
+                                <input type="url" class="form-control" id="urlResponse" value="https://epaycocom.000webhostapp.com/confirmation/mix.php">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-2">
+                                <label for="urlConfirmation" class="form-label">URL Confirmación</label>
+                                <input type="url" class="form-control" id="urlConfirmation" value="https://epaycocom.000webhostapp.com/confirmation/mix.php">
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-3">
+                                <div class="mb-2">
+                                    <label for="invoice" class="form-label">ID Factura</label>
+                                    <input type="text" class="form-control" id="invoice" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-9">
+                                <div class="mb-2">
+                                    <label for="description" class="form-label">Descripción <span>*</span></label>
+                                    <input type="text" class="form-control required" list="description" id="inputDescription">
+                                    <datalist id="description">
+                                        <option value="Prueba ePayco PSE"></option>
+                                        <option value="Prueba ePayco Daviplata"></option>
+                                        <option value="Prueba ePayco TDC Redeban"></option>
+                                        <option value="Prueba ePayco TDC Credibanco"></option>
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-xl-6">
+                                <div class="mb-2">
+                                    <label for="inputName" class="form-label">Nombre y Apellido <span>*</span></label>
+                                    <input type="text" class="form-control required" id="inputName" list="name" >
+                                    <datalist id="name">
+                                        <option value="Catherine Aguilar"></option>
+                                        <option value="Claudia Osorno"></option>
+                                        <option value="Daniela Gutierrez"></option>
+                                        <option value="Durley Montoya"></option>
+                                        <option value="Tatiana Torres"></option>
+                                        <option value="Monica Ramirez"></option>
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="col-12 col-xl-6">
+                                <div class="mb-2">
+                                    <label for="id" class="form-label">Documento <span>*</span></label>
+                                    <input type="text" class="form-control" id="id" value="123456879">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-xl-6">
+                                <div class="mb-2">
+                                    <label for="address" class="form-label">Dirección</label>
+                                    <input type="text" class="form-control" id="address" value="Carrera 48 # 20 - 114, Torre 3, Oficina 655">
+                                </div>
+                            </div>
+                            <div class="col-12 col-xl-6">
+                                <div class="mb-2">
+                                    <label for="phone" class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" id="phone" value="3174368801">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row" id="divSplit" hidden>
+                            <label for="" class="form-label">Campos Split Multiple</label>
+                            <div class="accordion mb-2" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">Recibidor #1</button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="idClient1" class="form-label">ID ePayco</label>
+                                                        <input type="number" class="form-control" id="idClient1" value="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="taxBase1" class="form-label">Valor</label>
+                                                        <input type="number" class="form-control" id="taxBase1" value="0.00" step="any" min="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="taxIva1" class="form-label">IVA</label>
+                                                        <input type="number" class="form-control" id="taxIva1" value="0.00" step="any" min="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="fee1" class="form-label">Fee</label>
+                                                        <input type="number" class="form-control" id="fee1" value="0.00" step="any" min="0">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Recibidor #2</button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="idClient2" class="form-label">ID ePayco</label>
+                                                        <input type="number" class="form-control" id="idClient2" value="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="taxBase2" class="form-label">Valor</label>
+                                                        <input type="number" class="form-control" id="taxBase2" value="0.00" step="any" min="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="taxIva2" class="form-label">IVA</label>
+                                                        <input type="number" class="form-control" id="taxIva2" value="0.00" step="any" min="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-3">
+                                                    <div class="mb-2">
+                                                        <label for="fee2" class="form-label">Fee</label>
+                                                        <input type="number" class="form-control" id="fee2" value="0.00" step="any" min="0">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        <!-- <div class="row">
+                            <div class="col-md-12 col-xl-6">
+                                <div class="mb-2">
+                                    <label for="taxBase" class="form-label">Sub-Total <span>*</span></label>
+                                    <input type="text" class="form-control" id="taxBase" value="0" pattern="[0-9]" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-6">
+                                <div class="mb-2">
+                                    <label for="taxIva" class="form-label">IVA</label>
+                                    <input type="number" class="form-control" id="taxIva" value="0.00" step="any" min="0">
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="row">
+                            <!-- <div class="col-md-12 col-xl-6">
+                                <div class="mb-2">
+                                    <label for="taxIco" class="form-label">Imp. Consumo</label>
+                                    <input type="number" class="form-control" id="taxIco" value="0.00" step="any" min="0" pattern="^[0-9]\d+$">
+                                </div>
+                            </div> -->
+                            <div class="col-md-12 col-xl-6">
+                                <div class="mb-3">
+                                    <label for="taxBase" class="form-label">Total</label>
+                                    <input type="text" class="form-control" id="amount" value="0,00" pattern="[0-9]" min="0"></input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input class="btn btn-dark form-control" type="submit" value="Pagar" id="pay">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<footer class="mt-auto footer">
+    <div class="container pt-3">
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <h4 class="textColor">Mas información</h4>
+                <hr class="textColor">
+                <p class="textColor">Aplicación realizada para probar la funcionalidades disponible del Web Checkout desarrollado por ePayco, </p>
+            </div>
+            <div class="col-12 col-lg-3">
+                <h4 class="textColor">Redes Sociales</h4>
+                <hr class="textColor">
+                <div class="row mb-1">
+                    <div class="col-2 d-flex justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM277.3 415.7c-8.4 1.5-11.5-3.7-11.5-8 0-5.4.2-33 .2-55.3 0-15.6-5.2-25.5-11.3-30.7 37-4.1 76-9.2 76-73.1 0-18.2-6.5-27.3-17.1-39 1.7-4.3 7.4-22-1.7-45-13.9-4.3-45.7 17.9-45.7 17.9-13.2-3.7-27.5-5.6-41.6-5.6-14.1 0-28.4 1.9-41.6 5.6 0 0-31.8-22.2-45.7-17.9-9.1 22.9-3.5 40.6-1.7 45-10.6 11.7-15.6 20.8-15.6 39 0 63.6 37.3 69 74.3 73.1-4.8 4.3-9.1 11.7-10.6 22.3-9.5 4.3-33.8 11.7-48.3-13.9-9.1-15.8-25.5-17.1-25.5-17.1-16.2-.2-1.1 10.2-1.1 10.2 10.8 5 18.4 24.2 18.4 24.2 9.7 29.7 56.1 19.7 56.1 19.7 0 13.9.2 36.5.2 40.6 0 4.3-3 9.5-11.5 8-66-22.1-112.2-84.9-112.2-158.3 0-91.8 70.2-161.5 162-161.5S388 165.6 388 257.4c.1 73.4-44.7 136.3-110.7 158.3zm-98.1-61.1c-1.9.4-3.7-.4-3.9-1.7-.2-1.5 1.1-2.8 3-3.2 1.9-.2 3.7.6 3.9 1.9.3 1.3-1 2.6-3 3zm-9.5-.9c0 1.3-1.5 2.4-3.5 2.4-2.2.2-3.7-.9-3.7-2.4 0-1.3 1.5-2.4 3.5-2.4 1.9-.2 3.7.9 3.7 2.4zm-13.7-1.1c-.4 1.3-2.4 1.9-4.1 1.3-1.9-.4-3.2-1.9-2.8-3.2.4-1.3 2.4-1.9 4.1-1.5 2 .6 3.3 2.1 2.8 3.4zm-12.3-5.4c-.9 1.1-2.8.9-4.3-.6-1.5-1.3-1.9-3.2-.9-4.1.9-1.1 2.8-.9 4.3.6 1.3 1.3 1.8 3.3.9 4.1zm-9.1-9.1c-.9.6-2.6 0-3.7-1.5s-1.1-3.2 0-3.9c1.1-.9 2.8-.2 3.7 1.3 1.1 1.5 1.1 3.3 0 4.1zm-6.5-9.7c-.9.9-2.4.4-3.5-.6-1.1-1.3-1.3-2.8-.4-3.5.9-.9 2.4-.4 3.5.6 1.1 1.3 1.3 2.8.4 3.5zm-6.7-7.4c-.4.9-1.7 1.1-2.8.4-1.3-.6-1.9-1.7-1.5-2.6.4-.6 1.5-.9 2.8-.4 1.3.7 1.9 1.8 1.5 2.6z"/></svg>
+                    </div>
+                    <div class="col-10 textColor d-flex align-items-center">
+                        Siguenos en Github
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-2 d-flex justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-48.9 158.8c.2 2.8.2 5.7.2 8.5 0 86.7-66 186.6-186.6 186.6-37.2 0-71.7-10.8-100.7-29.4 5.3.6 10.4.8 15.8.8 30.7 0 58.9-10.4 81.4-28-28.8-.6-53-19.5-61.3-45.5 10.1 1.5 19.2 1.5 29.6-1.2-30-6.1-52.5-32.5-52.5-64.4v-.8c8.7 4.9 18.9 7.9 29.6 8.3a65.447 65.447 0 0 1-29.2-54.6c0-12.2 3.2-23.4 8.9-33.1 32.3 39.8 80.8 65.8 135.2 68.6-9.3-44.5 24-80.6 64-80.6 18.9 0 35.9 7.9 47.9 20.7 14.8-2.8 29-8.3 41.6-15.8-4.9 15.2-15.2 28-28.8 36.1 13.2-1.4 26-5.1 37.8-10.2-8.9 13.1-20.1 24.7-32.9 34z"/></svg>
+                    </div>
+                    <div class="col-10 textColor d-flex align-items-center">
+                        Siguenos en Twitter
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-2 d-flex justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+                    </div>
+                    <div class="col-10 textColor d-flex align-items-center">
+                        Siguenos en LinkedIn
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-3">
+                <h4 class="textColor">Contacto</h4>
+                <hr class="textColor">
+                <div class="row mb-1">
+                    <div class="col-2 d-flex justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M575.8 255.5C575.8 273.5 560.8 287.6 543.8 287.6H511.8L512.5 447.7C512.6 483.2 483.9 512 448.5 512H128.1C92.75 512 64.09 483.3 64.09 448V287.6H32.05C14.02 287.6 0 273.5 0 255.5C0 246.5 3.004 238.5 10.01 231.5L266.4 8.016C273.4 1.002 281.4 0 288.4 0C295.4 0 303.4 2.004 309.5 7.014L564.8 231.5C572.8 238.5 576.9 246.5 575.8 255.5H575.8zM288 160C252.7 160 224 188.7 224 224C224 259.3 252.7 288 288 288C323.3 288 352 259.3 352 224C352 188.7 323.3 160 288 160zM256 320C211.8 320 176 355.8 176 400C176 408.8 183.2 416 192 416H384C392.8 416 400 408.8 400 400C400 355.8 364.2 320 320 320H256z"/></svg>
+                    </div>
+                    <div class="col-10 textColor d-flex align-items-center">
+                        Medellin, Antioquia, Colombia
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-2 d-flex justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M224 122.8c-72.7 0-131.8 59.1-131.9 131.8 0 24.9 7 49.2 20.2 70.1l3.1 5-13.3 48.6 49.9-13.1 4.8 2.9c20.2 12 43.4 18.4 67.1 18.4h.1c72.6 0 133.3-59.1 133.3-131.8 0-35.2-15.2-68.3-40.1-93.2-25-25-58-38.7-93.2-38.7zm77.5 188.4c-3.3 9.3-19.1 17.7-26.7 18.8-12.6 1.9-22.4.9-47.5-9.9-39.7-17.2-65.7-57.2-67.7-59.8-2-2.6-16.2-21.5-16.2-41s10.2-29.1 13.9-33.1c3.6-4 7.9-5 10.6-5 2.6 0 5.3 0 7.6.1 2.4.1 5.7-.9 8.9 6.8 3.3 7.9 11.2 27.4 12.2 29.4s1.7 4.3.3 6.9c-7.6 15.2-15.7 14.6-11.6 21.6 15.3 26.3 30.6 35.4 53.9 47.1 4 2 6.3 1.7 8.6-1 2.3-2.6 9.9-11.6 12.5-15.5 2.6-4 5.3-3.3 8.9-2 3.6 1.3 23.1 10.9 27.1 12.9s6.6 3 7.6 4.6c.9 1.9.9 9.9-2.4 19.1zM400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM223.9 413.2c-26.6 0-52.7-6.7-75.8-19.3L64 416l22.5-82.2c-13.9-24-21.2-51.3-21.2-79.3C65.4 167.1 136.5 96 223.9 96c42.4 0 82.2 16.5 112.2 46.5 29.9 30 47.9 69.8 47.9 112.2 0 87.4-72.7 158.5-160.1 158.5z"/></svg>
+                    </div>
+                    <div class="col-10 textColor d-flex align-items-center">
+                        (+57) 304 246 2218
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-2 d-flex justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M464 64C490.5 64 512 85.49 512 112C512 127.1 504.9 141.3 492.8 150.4L275.2 313.6C263.8 322.1 248.2 322.1 236.8 313.6L19.2 150.4C7.113 141.3 0 127.1 0 112C0 85.49 21.49 64 48 64H464zM217.6 339.2C240.4 356.3 271.6 356.3 294.4 339.2L512 176V384C512 419.3 483.3 448 448 448H64C28.65 448 0 419.3 0 384V176L217.6 339.2z"/></svg>
+                    </div>
+                    <div class="col-10 textColor d-flex align-items-center">
+                        juan_diego07@hotmail.com
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- checkout de epayco -->
+<script type="text/javascript" src="https://checkout.epayco.co/checkout.js"></script>
+<!-- inicialización del checkout -->
+<script src="./js/handler.js"></script>
+<!-- validacion en js -->
+<script src="./js/validation.js"></script>
+<!-- bootstrap 5 js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<!-- sweetalert -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+</html>
