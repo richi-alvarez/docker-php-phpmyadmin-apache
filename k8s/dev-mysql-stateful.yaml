@@ -13,21 +13,6 @@ spec:
       port: 3306
       targetPort: 3306
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: dev-mysql
-  labels:
-    app: dev-mysql
-spec:
-  type: ClusterIP
-  selector:
-    app: dev-mysql
-  ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -45,6 +30,7 @@ spec:
       labels:
         app: dev-mysql
     spec:
+      restartPolicy: Always
       containers:
         - name: mysql
           image: mysql:5.7
@@ -53,22 +39,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: dev-mysql-secret
-                  key: mysql-root-password
+                  key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: dev-mysql-secret
-                  key: mysql-database
-            # - name: MYSQL_USER
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: dev-mysql-secret
-            #       key: mysql-user
-            # - name: MYSQL_PASSWORD
+                  key: MYSQL_DATABASE
+            - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: dev-mysql-secret
-                  key: mysql-password
+                  key: MYSQL_PASSWORD
           ports:
             - name: mysql
               containerPort: 3306
@@ -80,18 +61,26 @@ spec:
                 - mysqladmin ping -h 127.0.0.1 -uroot -p"${MYSQL_ROOT_PASSWORD}"
             initialDelaySeconds: 10
             periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -uroot -p"${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 30
+            periodSeconds: 20
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
       terminationGracePeriodSeconds: 30
-  volumeClaimTemplates:
-    - metadata:
-        name: mysql-data
-        labels:
-          app: dev-mysql
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 10Gi
-        storageClassName: standard
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-data

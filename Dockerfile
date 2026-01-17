@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.2-apache
 
 # Variables de entorno para versiones de Apache y dependencias
 ARG DEBIAN_FRONTEND=noninteractive
@@ -35,17 +35,14 @@ RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pc
 
 # Establecer archivo ini
 RUN ln -s $PHP_INI_DIR/php.ini $PHP_INI_DIR/php.ini
-# Instalar y configurar Xdebug
-#RUN pecl install xdebug && docker-php-ext-enable xdebug
-#RUN install-php-extensions xdebug && docker-php-ext-enable xdebug
-#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-
 
 # ===============================
 # 2️⃣ Instalar Composer
 # ===============================
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
+RUN curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin \
+    --filename=composer \
+    --version=2.7.0
 # ===============================
 # 3️⃣ Instalar y habilitar Xdebug
 # ===============================
@@ -66,6 +63,9 @@ RUN apt-get install -y nodejs
 # ===============================
 COPY config/php.ini /usr/local/etc/php/
 
+
+COPY php/000-default.conf /etc/apache2/sites-available/000-default.conf
+
 # ===============================
 # 5️⃣ Copiar código del proyecto
 # ===============================
@@ -74,8 +74,8 @@ COPY www/ /var/www/html
 # ===============================
 # 6️⃣ Configurar cron jobs
 # ===============================
-COPY docker/cronjobs/my-cron /etc/cron.d/my-cron
-RUN chmod 0644 /etc/cron.d/my-cron
+#COPY docker/cronjobs/my-cron /etc/cron.d/my-cron
+#RUN chmod 0644 /etc/cron.d/my-cron
 
 # ===============================
 # 7️⃣ Script de inicio
@@ -89,13 +89,13 @@ RUN chmod 0644 /etc/cron.d/my-cron
 # ===============================
 # 8️⃣ Crear carpeta logs y permisos
 # ===============================
-RUN mkdir -p /var/www/html/logs \
-    && chown -R www-data:www-data /var/www/html/logs \
-    && chmod -R 775 /var/www/html/logs
+# RUN mkdir -p /var/www/html/logs \
+#     && chown -R www-data:www-data /var/www/html/logs \
+#     && chmod -R 775 /var/www/html/logs
 
 # ===============================
 # 9️⃣ Configurar Apache
 # ===============================
 RUN a2enmod headers rewrite
 
-
+EXPOSE 80

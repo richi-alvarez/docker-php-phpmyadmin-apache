@@ -2,30 +2,31 @@
 # filepath: ./scripts/start-magento-ngrok.sh
 set -e
 
+# Cargar variables del archivo ./docker/api.env
+export $(grep -v '^#' ./docker/api.env | xargs)
+
 MAGENTO_DIR="./www/magento"
 TIMEOUT=300
 OPENSEARCH_HOST="opensearch"
 OPENSEARCH_URL="http://opensearch:9200"
-MAGENTO_PUBLIC_KEY="46adb569231bbe871cfcd67936ba0291"
-MAGENTO_PRIVATE_KEY="7fa9b6a6205e70767d45a31aab94765e"
 
 echo "🚀 Iniciando MySQL..."
 docker-compose up -d mysql
 
 echo "⏳ Esperando que MySQL esté listo..."
-sleep 15
+sleep 10
 
 echo "🚀 Iniciando phpMyAdmin..."
 docker-compose up -d phpmyadmin
 
 echo "⏳ Esperando que phpMyAdmin esté listo..."
-sleep 15
+sleep 10
 
 echo "🚀 Iniciando OpenSearch..."
 docker-compose up -d opensearch
 
 echo "⏳ Esperando que OpenSearch esté listo..."
-sleep 30
+sleep 10
 
 # Verificar si el directorio de Magento existe
 if [ ! -d "$MAGENTO_DIR" ]; then
@@ -46,9 +47,8 @@ if [ -n "$MAGENTO_PUBLIC_KEY" ] && [ -n "$MAGENTO_PRIVATE_KEY" ]; then
         #    --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
         
         # Descargar desde GitHub (versión open source)
-        MAGENTO_VERSION="2.4.7"
         curl -L "https://github.com/magento/magento2/archive/refs/tags/${MAGENTO_VERSION}.tar.gz" -o /tmp/magento.tar.gz
-        
+
         echo "📦 Extrayendo Magento..."
         tar -xzf /tmp/magento.tar.gz -C /tmp/
         
@@ -62,15 +62,15 @@ if [ -n "$MAGENTO_PUBLIC_KEY" ] && [ -n "$MAGENTO_PRIVATE_KEY" ]; then
         echo "✅ Magento descargado en $MAGENTO_DIR"
 
         # Clonar módulo Epayco desde la rama develop
-        echo "Clonando módulo Epayco desde la rama develop..."
-        git clone --branch develop https://github.com/epayco/magento2.x.git /tmp/epayco
+        #echo "Clonando módulo Epayco desde la rama develop..."
+        #git clone --branch develop https://github.com/epayco/magento2.x.git /tmp/epayco
         
         # Crear carpeta destino si no existe
         mkdir -p "$MAGENTO_DIR/app/code"
         # Copiar contenido del módulo
-        cp -r /tmp/epayco/* "$MAGENTO_DIR/app/code/"
+        #cp -r /tmp/epayco/* "$MAGENTO_DIR/app/code/"
 
-        rm -f /tmp/epayco -rf
+        #rm -f /tmp/epayco -rf
     
     else
         echo "✅ Magento ya existe en $MAGENTO_DIR, omitiendo descarga."
@@ -81,27 +81,16 @@ else
 fi
 
 echo "🛒 Iniciando contenedor Magento..."
-docker-compose up -d magento
-
+docker compose --env-file ./docker/api.env up -d magento
 echo "⏳ Esperando que Magento esté listo..."
-sleep 30
+sleep 10
 
-echo "🌐 Iniciando ngrok conectado a Magento..."
-docker-compose up -d ngrok-magento
+#echo "🌐 Iniciando ngrok conectado a Magento..."
+#docker-compose up -d ngrok-magento
 
 echo "📡 Obteniendo URL de ngrok..."
-sleep 10
-# NGROK_URL=""
-# for i in $(seq 1 30); do
-#   NGROK_URL=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
-#     | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
-#   if [ -n "$NGROK_URL" ]; then
-#     echo "✅ URL de ngrok encontrada: $NGROK_URL"
-#     break
-#   fi
-#   echo "  🔄 Intento $i/30..."
-#   sleep 3
-# done
+sleep 5
+
 get_ngrok_url() {
     local attempts=0
     local max_attempts=30
@@ -123,15 +112,15 @@ get_ngrok_url() {
     
     return 1
 }
-NGROK_URL=$(get_ngrok_url)
+# NGROK_URL=$(get_ngrok_url)
 
-if [ -z "$NGROK_URL" ]; then
-  echo "❌ Error: no se obtuvo la URL de ngrok."
-  echo "📋 Logs de ngrok:"
-  docker-compose logs --tail=20 ngrok-magento
-  exit 1
-fi
-
+# if [ -z "$NGROK_URL" ]; then
+#   echo "❌ Error: no se obtuvo la URL de ngrok."
+#   echo "📋 Logs de ngrok:"
+#   docker-compose logs --tail=20 ngrok-magento
+#   exit 1
+# fi
+NGROK_URL="http://localhost:$PORT_LOCAL"
 DOMAIN=$(echo "$NGROK_URL" | sed 's|https://||; s|http://||')
 
 echo "🏷️  Configurando Magento para usar: $NGROK_URL"
@@ -192,10 +181,10 @@ if [ ! -f "$MAGENTO_DIR/app/etc/env.php" ]; then
         composer config repositories.magento composer https://repo.magento.com/
         composer require magento/module-bundle-sample-data magento/module-widget-sample-data magento/module-theme-sample-data magento/module-catalog-sample-data magento/module-customer-sample-data magento/module-cms-sample-data magento/module-catalog-rule-sample-data magento/module-sales-rule-sample-data magento/module-review-sample-data magento/module-tax-sample-data magento/module-sales-sample-data magento/module-grouped-product-sample-data magento/module-downloadable-sample-data magento/module-msrp-sample-data magento/module-configurable-sample-data --no-update || true
         composer update || true
-        bin/magento setup:upgrade || true#Activar Sample data
+        bin/magento setup:upgrade || true #Activar Sample data
         bin/magento sampledata:deploy
         
-        bin/magento module:enable PagoEpayco_Payco
+        #bin/magento module:enable PagoEpayco_Payco
         # Configurar modo desarrollador y optimizar
         bin/magento setup:upgrade
         bin/magento deploy:mode:set developer
@@ -231,7 +220,7 @@ echo "🔄 Reiniciando Magento para aplicar cambios..."
 docker-compose restart magento
 
 echo "⏳ Esperando que Magento reinicie..."
-sleep 20
+sleep 10
 
 echo "🔍 Verificando que Magento responda..."
 for i in $(seq 1 15); do

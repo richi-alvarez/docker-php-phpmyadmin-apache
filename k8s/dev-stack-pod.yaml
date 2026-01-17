@@ -1,37 +1,13 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: dev-stack-pod
+  name: apache-local-pod
   labels:
-    app: dev-stack
+    app: apache-local
 spec:
   restartPolicy: Always
   containers:
-    - name: mysql
-      image: mysql:5.7
-      env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: "test"
-        - name: MYSQL_DATABASE
-          value: "wordpress"
-        - name: MYSQL_PASSWORD
-          value: "test"
-      ports:
-        - name: mysql
-          containerPort: 3306
-      volumeMounts:
-        - name: mysql-data
-          mountPath: /var/lib/mysql
-      readinessProbe:
-        exec:
-          command:
-            - sh
-            - -c
-            - mysqladmin ping -h 127.0.0.1 -uroot -ptest
-        initialDelaySeconds: 10
-        periodSeconds: 10
-
-    - name: local
+    - name: apache-local
       image: apache-local:latest
       imagePullPolicy: Never
       env:
@@ -47,12 +23,9 @@ spec:
       volumeMounts:
         - name: www-data
           mountPath: /var/www/html
-        - name: php-config
-          mountPath: /usr/local/etc/php/conf.d
   volumes:
-    - name: mysql-data
-      emptyDir: {}
     - name: www-data
-      emptyDir: {}
-    - name: php-config
-      emptyDir: {}
+      hostPath:
+        path: /mnt/www
+        type: Directory
+      #emptyDir: {}

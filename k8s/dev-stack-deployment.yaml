@@ -1,58 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dev-stack-deployment
+  name: apache-local-deployment
   labels:
-    app: dev-stack
+    app: apache-local
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dev-stack
+      app: apache-local
   template:
     metadata:
       labels:
-        app: dev-stack
+        app: apache-local
     spec:
       containers:
-        - name: mysql
-          image: mysql:5.7
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: dev-mysql-secret
-                  key: mysql-root-password
-            - name: MYSQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: dev-mysql-secret
-                  key: mysql-database
-            - name: MYSQL_USER
-              valueFrom:
-                secretKeyRef:
-                  name: dev-mysql-secret
-                  key: mysql-user
-            - name: MYSQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: dev-mysql-secret
-                  key: mysql-password
-          ports:
-            - name: mysql
-              containerPort: 3306
-          volumeMounts:
-            - name: mysql-data
-              mountPath: /var/lib/mysql
-          readinessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - mysqladmin ping -h 127.0.0.1 -uroot -ptest
-            initialDelaySeconds: 10
-            periodSeconds: 10
-
         - name: local
           image: apache-local:latest
           imagePullPolicy: Never
@@ -69,19 +31,10 @@ spec:
           volumeMounts:
             - name: www-data
               mountPath: /var/www/html
-            - name: php-config
-              mountPath: /usr/local/etc/php/conf.d
 
       # emptyDir volumes are fine for single-replica development deployments
       volumes:
-        - name: mysql-data
-          #emptyDir: {}
-          persistentVolumeClaim:
-            claimName: mysql-data-pvc
         - name: www-data
-          persistentVolumeClaim:
-            claimName: www-data-pvc
-        - name: php-config
-          #emptyDir: {}
-          persistentVolumeClaim:
-            claimName: php-config-pvc
+          hostPath:
+            path: /mnt/www
+            type: Directory

@@ -20,11 +20,11 @@ docker-compose up -d prestashop
 echo "⏳ Esperando que PrestaShop esté listo..."
 sleep 10
 
-echo "🌐 Iniciando ngrok conectado a PrestaShop..."
-docker-compose up -d ngrok-prestashop
+# echo "🌐 Iniciando ngrok conectado a PrestaShop..."
+# docker-compose up -d ngrok-prestashop
 
 echo "📡 Obteniendo URL de ngrok..."
-sleep 15
+sleep 10
 
 # Función para obtener URL de ngrok
 get_ngrok_url() {
@@ -69,14 +69,14 @@ SQL
 }
 
 # Obtener URL inicial
-NGROK_URL=$(get_ngrok_url)
-if [ -z "$NGROK_URL" ]; then
-    echo "❌ Error: no se obtuvo la URL de ngrok."
-    echo "📋 Logs de ngrok:"
-    docker-compose logs --tail=20 ngrok-prestashop
-    exit 1
-fi
-#NGROK_URL="https://yea-commerce-screenshot-packing.trycloudflare.com"
+# NGROK_URL=$(get_ngrok_url)
+# if [ -z "$NGROK_URL" ]; then
+#     echo "❌ Error: no se obtuvo la URL de ngrok."
+#     echo "📋 Logs de ngrok:"
+#     docker-compose logs --tail=20 ngrok-prestashop
+#     exit 1
+# fi
+NGROK_URL="https://dod-centered-footage-inn.trycloudflare.com"
 echo "✅ URL inicial de ngrok encontrada: $NGROK_URL"
 
 # Actualizar PrestaShop con URL inicial

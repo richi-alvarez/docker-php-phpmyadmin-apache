@@ -34,3 +34,5 @@ chmod +x ./scripts/start-ngrok-prestashop.sh
 chmod +x ./scripts/stop-all.sh
 chmod +x ./scripts/logs.sh
 chmod +x ./scripts/start-with-ngrok-choice.sh
+
+cloudflared tunnel --url http://localhost:80

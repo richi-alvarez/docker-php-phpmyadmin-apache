@@ -21,21 +21,11 @@ echo "⏳ Esperando que Wordpress esté listo..."
 sleep 25
 
 echo "🌐 Iniciando ngrok para WordPress..."
-docker-compose up -d ngrok-wordpress
+#docker-compose up -d ngrok-wordpress
 
 echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4041)..."
 sleep 10
-# NGROK_URL=""
-# for i in $(seq 1 30); do
-#   NGROK_URL=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
-#     | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
-#   if [ -n "$NGROK_URL" ]; then
-#     echo "✅ URL de ngrok encontrada: $NGROK_URL"
-#     break
-#   fi
-#   echo "  🔄 Intento $i/30..."
-#   sleep 3
-# done
+
 get_ngrok_url() {
     local attempts=0
     local max_attempts=30
@@ -57,14 +47,14 @@ get_ngrok_url() {
     
     return 1
 }
-
-NGROK_URL=$(get_ngrok_url)
-if [ -z "$NGROK_URL" ]; then
-  echo "❌ Error: no se obtuvo la URL de ngrok."
-  echo "📋 Logs de ngrok:"
-  docker-compose logs --tail=20 ngrok-wordpress
-  exit 1
-fi
+NGROK_URL='https://cat-tongue-happy-bio.trycloudflare.com'
+# NGROK_URL=$(get_ngrok_url)
+# if [ -z "$NGROK_URL" ]; then
+#   echo "❌ Error: no se obtuvo la URL de ngrok."
+#   echo "📋 Logs de ngrok:"
+#   docker-compose logs --tail=20 ngrok-wordpress
+#   exit 1
+# fi
 
 echo "🏷️  URL configurada: $NGROK_URL"
 

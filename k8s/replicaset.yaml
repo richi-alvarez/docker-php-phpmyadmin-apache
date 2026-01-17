@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: apache-local-replicaset
+  labels:
+    app: apache-local
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apache-local
+  template:
+    metadata:
+      labels:
+        app: apache-local
+    spec:
+      containers:
+      - name: apache-local
+        image: apache-local:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80

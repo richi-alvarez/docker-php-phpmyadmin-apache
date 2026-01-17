@@ -11,7 +11,7 @@ services:
         command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
         #command: --default-authentication-plugin=caching_sha2_password
         environment:
-            MYSQL_DATABASE: wordpress
+            MYSQL_DATABASE: magento
             MYSQL_PASSWORD: test
             MYSQL_ROOT_PASSWORD: test
             #MYSQL_USER: root
@@ -139,7 +139,7 @@ services:
         depends_on:
             - mysql
         ports:
-            - 80:80
+            - 82:80
         environment:
             WORDPRESS_DB_HOST: mysql
             WORDPRESS_DB_NAME: wordpress
@@ -296,20 +296,20 @@ services:
             apache2-foreground
             "
 
-    # ngrok-opencart:
-    #     image: ngrok/ngrok:latest
-    #     container_name: ngrok-opencart
-    #     restart: always
-    #     depends_on:
-    #        - opencart
-    #     environment:
-    #         # Set NGROK_AUTHTOKEN in your shell or in a .env file
-    #         NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
-    #     command: ["http", "opencart:80"]
-    #     ports:
-    #         - "4044:4040" # ngrok web UI
-    #     networks:
-    #         - local-network
+    ngrok-opencart:
+        image: ngrok/ngrok:latest
+        container_name: ngrok-opencart
+        restart: always
+        depends_on:
+           - opencart
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "opencart:80"]
+        ports:
+            - "4044:4040" # ngrok web UI
+        networks:
+            - local-network
 
     magento:
         build:
@@ -342,36 +342,36 @@ services:
         networks:
         - local-network
     
-    # ngrok-magento:
-    #     image: ngrok/ngrok:latest
-    #     container_name: ngrok-magento
-    #     restart: always
-    #     depends_on:
-    #        - magento
-    #     environment:
-    #         # Set NGROK_AUTHTOKEN in your shell or in a .env file
-    #         #NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
-    #     command: ["http", "magento:80"]
-    #     ports:
-    #         - "4045:4040" # ngrok web UI
-    #     networks:
-    #         - local-network
+    ngrok-magento:
+        image: ngrok/ngrok:latest
+        container_name: ngrok-magento
+        restart: always
+        depends_on:
+           - magento
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "magento:80"]
+        ports:
+            - "4045:4040" # ngrok web UI
+        networks:
+            - local-network
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         links:
-            - mysql-joomla:mysql-joomla
+            - mysql:mysql
         ports:
             - 8089:80
         restart: always
         environment:
             PMA_ARBITRARY: 1
-            PMA_HOST: mysql-joomla
+            PMA_HOST: mysql
             MYSQL_USER: root
             MYSQL_PASSWORD: test
             MYSQL_ROOT_PASSWORD: test
         depends_on:
-            mysql-joomla:
+            mysql:
                 condition: service_healthy
         networks:
             - local-network
