@@ -2,7 +2,7 @@
 eval $(minikube docker-env)
 
 # construir la imagen dentro de minikube
-docker build -t local:dev -f ./Dockerfile .
+docker build -t apache-local:latest -f ./Dockerfile .
 
 # volver al docker host original (opcional)
 eval $(minikube docker-env -u)

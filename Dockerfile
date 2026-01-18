@@ -33,9 +33,6 @@ ENV PATH="/usr/local/apache2/bin:$PATH"
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 RUN install-php-extensions redis memcached mysqli pdo_mysql zip mbstring exif pcntl bcmath gd intl ldap
 
-# Establecer archivo ini
-RUN ln -s $PHP_INI_DIR/php.ini $PHP_INI_DIR/php.ini
-
 # ===============================
 # 2️⃣ Instalar Composer
 # ===============================
