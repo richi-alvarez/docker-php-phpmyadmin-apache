@@ -75,7 +75,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 # ===============================
 # 5️⃣ Apache + Magento ajustes
 # ===============================
-ENV APACHE_DOCUMENT_ROOT /var/www/html/pub
+ENV APACHE_DOCUMENT_ROOT /var/www/html/
 
 # Habilitar mod_rewrite
 RUN a2enmod rewrite
@@ -83,8 +83,11 @@ RUN a2enmod rewrite
 # Ajustar DocumentRoot y permitir .htaccess
 #RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf \
     #&& echo '<Directory /var/www/html/pub>\nOptions Indexes FollowSymLinks\nAllowOverride All\nRequire all granted\n</Directory>' >> /etc/apache2/apache2.conf
-COPY php/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY ../config/php.ini /usr/local/etc/php/
 
+COPY ../php/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+#COPY ../www/ /var/www/html
 # =============================== 
 # 5️⃣ Xdebug 
 # =============================== 

@@ -1,0 +1,33 @@
+services:
+  apache:
+    build: .
+    container_name: apache-local
+    restart: always
+    ports: 
+      - "80:80"
+    volumes:
+      - ../../www:/var/www/html
+    environment:
+      XDEBUG_CLIENT_HOST: 172.17.0.1
+      XDEBUG_CLIENT_PORT: 9004
+      PHP_IDE_CONFIG: serverName=local-server
+    networks:
+      - local-network
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    restart: always
+    depends_on:
+      - apache-local
+    environment:
+      # Set NGROK_AUTHTOKEN in your shell or in a .env file
+      NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+    command: ["http", "apache-local:80"]
+    ports:
+      - "4040:4040" # ngrok web UI
+    networks:
+      - local-network
+
+networks:
+    local-network:

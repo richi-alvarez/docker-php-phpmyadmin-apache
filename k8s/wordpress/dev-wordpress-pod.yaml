@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-wordpress-pod
+  labels:
+    app: dev-wordpress
+spec:
+  containers:
+    - name: wordpress
+      image: wordpress:latest
+      ports:
+        - containerPort: 80
+      env:
+        - name: WORDPRESS_DB_HOST
+          value: "dev-mysql.default.svc.cluster.local"
+        - name: WORDPRESS_DB_USER
+          value: "root"
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dev-mysql-secret
+              key: MYSQL_PASSWORD
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: dev-mysql-secret
+              key: MYSQL_DATABASE
+        - name: WORDPRESS_DEBUG
+          value: "1"
+        - name: WORDPRESS_CONFIG_EXTRA
+          value: |
+            define('WP_DEBUG', true);
+            define('WP_DEBUG_LOG', true);
+            define('WP_DEBUG_DISPLAY', false);
+            define('FS_METHOD', 'direct');
+      volumeMounts:
+        - name: wordpress-data
+          mountPath: /var/www/html/wordpress
+  volumes:
+    - name: wordpress-data
+      hostPath:
+        path: /mnt/data/wordpress

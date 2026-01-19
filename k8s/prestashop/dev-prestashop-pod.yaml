@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-prestashop-pod
+  labels:
+    app: dev-prestashop
+spec:
+  containers:
+    - name: prestashop
+      image: prestashop/prestashop:8.2.3
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+      env:
+        - name: DB_SERVER
+          value: "dev-mysql.default.svc.cluster.local"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: dev-mysql-secret
+              key: MYSQL_PASSWORD
+        - name: DB_NAME
+          value: "prestashop"
+        - name: PS_FOLDER_ADMIN
+          value: "admin4577"
+        - name: PS_FOLDER_INSTALL
+          value: "install4577"
+        - name: PS_INSTALL_AUTO
+          value: "1"
+        - name: PS_DEV_MODE
+          value: "1"
+        - name: PS_LANGUAGE
+          value: "es"
+        - name: PS_COUNTRY
+          value: "CO"
+        - name: PS_TIMEZONE
+          value: "America/Bogota"
+        - name: PS_CURRENCY
+          value: "COP"
+        - name: ADMIN_MAIL
+          value: "admin@example.com"
+        - name: ADMIN_PASSWD
+          value: "admin123"  
+        - name: PS_DOMAIN
+          value: "192.168.49.2:30083"
+        - name: PS_SHOP_DOMAIN
+          value: "192.168.49.2:30083"
+        - name: PS_SHOP_DOMAIN_SSL
+          value: "192.168.49.2:30083"
+        - name: PS_SSL_ENABLED
+          value: "0"
+        - name: PS_SSL_ENABLED_EVERYWHERE
+          value: "0"
+      volumeMounts:
+        - name: prestashop-data
+          mountPath: /var/www/html/prestashop
+  volumes:
+    - name: prestashop-data
+      hostPath:
+        path: /mnt/data/prestashop

@@ -52,10 +52,13 @@ kubectl port-forward svc/<nombre-del-service> 8080:80
 Luego abre http://localhost:8080 en tu navegador.
 
 minikube service dev-stack-local --url
+minikube service dev-wordpress-service --url
 Luego abre http://192.168.58.2:30080
 
 #Para montar una carpeta local (por ejemplo, www) como volumen en tu pod de Kubernetes, debes usar un volumen de tipo hostPat
 minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www:/mnt/www
+minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www/wordpress:/mnt/www/wordpress
+
 
 #contenedor mysql
 kubectl exec -it <nombre-del-pod> -- bash

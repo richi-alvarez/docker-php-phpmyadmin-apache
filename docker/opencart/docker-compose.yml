@@ -1,0 +1,50 @@
+services:
+  opencart:
+    container_name: opencart
+    #image: bitnami/opencart:4
+    #: opencart/opencart:4.0.2.3
+    image: php:8.1-apache
+    #build: .
+    restart: unless-stopped
+    ports:
+        - 84:80
+    environment:
+        XDEBUG_CLIENT_HOST: 172.17.0.1
+        XDEBUG_CLIENT_PORT: 9004
+        PHP_IDE_CONFIG: serverName=local-server
+    networks:
+        - local-network
+    volumes:
+        - ../../www/opencart:/var/www/html/opencart
+        #- ./config:/usr/local/etc/php
+        - ../../php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        - ../../config/opencart.ini:/usr/local/etc/php/conf.d/opencart.ini
+    command: >
+        bash -c "
+        apt-get update &&
+        apt-get install -y libzip-dev zip unzip curl libfreetype6-dev libjpeg62-turbo-dev libpng-dev &&
+        docker-php-ext-configure gd --with-freetype --with-jpeg &&
+        docker-php-ext-install mysqli pdo pdo_mysql zip gd &&
+        a2enmod rewrite &&
+        chown -R www-data:www-data /var/www/html &&
+        chmod -R 755 /var/www/html &&
+        apache2-foreground
+        "
+
+  ngrok-opencart:
+    image: ngrok/ngrok:latest
+    container_name: ngrok-opencart
+    restart: always
+    depends_on:
+        - opencart
+    environment:
+        # Set NGROK_AUTHTOKEN in your shell or in a .env file
+        NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+    command: ["http", "opencart:80"]
+    ports:
+        - "4044:4040" # ngrok web UI
+    networks:
+        - local-network
+
+networks:
+    local-network:

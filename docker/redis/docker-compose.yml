@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis:6.2
+    container_name: redis_local
+    ports:
+      - "6379:6379"
+    networks:
+      - local-network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+
+networks:
+  local-network:

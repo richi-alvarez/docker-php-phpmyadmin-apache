@@ -1,0 +1,73 @@
+services:
+  magento:
+    build:
+      context: .
+      dockerfile: DockerfileMagento
+    args:
+        MAGENTO_PUBLIC_KEY: ${MAGENTO_PUBLIC_KEY}
+        MAGENTO_PRIVATE_KEY: ${MAGENTO_PRIVATE_KEY}
+        XDEBUG_CLIENT_HOST: ${XDEBUG_CLIENT_HOST}
+        XDEBUG_CLIENT_PORT: ${XDEBUG_CLIENT_PORT}
+    container_name: magento
+    env_file:
+        - ../api.env
+    ports:
+        - "${PORT_LOCAL}:80"
+    volumes:
+        - ../../www/magento:/var/www/html
+        - ../../php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    environment:
+        MAGENTO_PUBLIC_KEY: ${MAGENTO_PUBLIC_KEY}
+        MAGENTO_PRIVATE_KEY: ${MAGENTO_PRIVATE_KEY}
+        XDEBUG_CLIENT_HOST: ${XDEBUG_CLIENT_HOST}
+        XDEBUG_CLIENT_PORT: ${XDEBUG_CLIENT_PORT}
+        PHP_IDE_CONFIG: serverName=www-server
+    depends_on:
+        mysql:
+            condition: service_healthy
+        opensearch:
+            condition: service_healthy
+    networks:
+    - local-network
+
+  opensearch:
+    image: opensearchproject/opensearch:2.2.1
+    container_name: opensearch
+    hostname: opensearch
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - cluster.name=magento-opensearch-cluster
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport"
+    ulimits:
+        memlock:
+            soft: -1
+            hard: -1
+    ports:
+        - "9200:9200"
+    networks:
+        - local-network
+    restart: unless-stopped
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+        interval: 10s
+        timeout: 10s
+        retries: 30
+
+  ngrok-magento:
+    image: ngrok/ngrok:latest
+    container_name: ngrok-magento
+    restart: always
+    depends_on:
+        - magento
+    environment:
+        # Set NGROK_AUTHTOKEN in your shell or in a .env file
+        NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+    command: ["http", "magento:80"]
+    ports:
+        - "4045:4040" # ngrok web UI
+    networks:
+        - local-network
+
+networks:
+    local-network:

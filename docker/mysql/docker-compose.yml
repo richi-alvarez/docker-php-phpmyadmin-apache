@@ -1,0 +1,36 @@
+services:
+  mysql:
+    #container_name: mysql
+    #image: mariadb:10.6.4-focal
+    image: mysql:5.7
+    #image: mysql:5.5
+    restart: always
+    ports: 
+        - "3308:3306"
+    command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
+    #command: --default-authentication-plugin=caching_sha2_password
+    environment:
+        MYSQL_DATABASE: magento
+        MYSQL_PASSWORD: test
+        MYSQL_ROOT_PASSWORD: test
+        #MYSQL_USER: root
+    volumes:
+        - ../mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
+        - ../mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
+        - ../mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
+        - ../mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
+        - ../mysql/init-magento.sql:/docker-entrypoint-initdb.d/init-magento.sql
+        - persistent:/var/lib/mysql
+    networks:
+        - local-network
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptest"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+
+volumes:
+    persistent: {}
+
+networks:
+    local-network:

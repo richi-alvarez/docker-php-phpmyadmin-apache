@@ -64,12 +64,15 @@ RUN apt-get install -y nodejs
 # ===============================
 # 4️⃣ Configuración PHP personalizada
 # ===============================
-COPY config/php.ini /usr/local/etc/php/
+COPY ../config/php.ini /usr/local/etc/php/
+
+COPY ../php/000-default.conf /etc/apache2/sites-available/000-default.conf
+
 
 # ===============================
 # 5️⃣ Copiar código del proyecto
 # ===============================
-COPY www/ /var/www/html
+COPY ../www/ /var/www/html
 
 # ===============================
 # 6️⃣ Configurar cron jobs

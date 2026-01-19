@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-phpmyadmin
+  labels:
+    app: dev-phpmyadmin
+spec:
+  containers:
+    - name: phpmyadmin
+      image: phpmyadmin/phpmyadmin:latest
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+      env:
+        - name: PMA_ARBITRARY
+          value: "1"
+        - name: PMA_HOST
+          value: "dev-mysql"
+        - name: PMA_PORT
+          value: "3306"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dev-mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: dev-mysql-secret
+              key: MYSQL_DATABASE
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dev-mysql-secret
+              key: MYSQL_PASSWORD
+        
+  restartPolicy: Always
