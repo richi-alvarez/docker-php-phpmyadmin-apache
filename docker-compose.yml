@@ -206,6 +206,8 @@ services:
     prestashop:
         container_name: prestashop
         image: prestashop/prestashop:8.2.3
+        #image: prestashop/prestashop:8.2.4
+        #image: prestashop/prestashop:9.0-apache
         restart: unless-stopped
         depends_on:
             - mysql
@@ -225,7 +227,7 @@ services:
             PS_TIMEZONE: America/Bogota
             PS_CURRENCY: COP              # Moneda predeterminada (Peso Colombiano)
             ADMIN_MAIL: admin@example.com  # 🔑 Usuario admin del Back Office
-            ADMIN_PASSWD: admin123        # 🔑 Contraseña admin
+            ADMIN_PASSWD: Sistemas1305        # 🔑 Contraseña admin
             #PS_ERASE_DB: 1
             #PS_INSTALL_DB: 1
             # 🌐 Configuración para ngrok
@@ -233,11 +235,11 @@ services:
             #PS_SHOP_DOMAIN: "localhost:8082"
             #PS_SHOP_DOMAIN_SSL: "localhost:8082"
             #PS_SSL_ENABLED: 0
-            PS_DOMAIN: "${PS_DOMAIN:-localhost:8083}"
-            PS_SHOP_DOMAIN: "${PS_SHOP_DOMAIN:-localhost:8083}"
-            PS_SHOP_DOMAIN_SSL: "${PS_SHOP_DOMAIN_SSL:-localhost:8083}"
-            PS_SSL_ENABLED: "${PS_SSL_ENABLED:-0}"
-            PS_SSL_ENABLED_EVERYWHERE: "${PS_SSL_ENABLED_EVERYWHERE:-0}"
+            #PS_DOMAIN: "${PS_DOMAIN:-localhost:8083}"
+            #PS_SHOP_DOMAIN: "${PS_SHOP_DOMAIN:-localhost:8083}"
+            #PS_SHOP_DOMAIN_SSL: "${PS_SHOP_DOMAIN_SSL:-localhost:8083}"
+            #PS_SSL_ENABLED: "${PS_SSL_ENABLED:-0}"
+            #PS_SSL_ENABLED_EVERYWHERE: "${PS_SSL_ENABLED_EVERYWHERE:-0}"
         networks:
         - local-network
         volumes:
@@ -314,7 +316,7 @@ services:
     magento:
         build:
             context: .
-            dockerfile: DockerfileMagento
+            dockerfile: ./docker/magento/DockerfileMagento
             args:
                 MAGENTO_PUBLIC_KEY: ${MAGENTO_PUBLIC_KEY}
                 MAGENTO_PRIVATE_KEY: ${MAGENTO_PRIVATE_KEY}

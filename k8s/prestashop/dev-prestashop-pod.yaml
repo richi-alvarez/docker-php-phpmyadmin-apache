@@ -8,21 +8,30 @@ spec:
   containers:
     - name: prestashop
       image: prestashop/prestashop:8.2.3
-      imagePullPolicy: IfNotPresent
+      #image: prestashop/prestashop:8.2.4
+      #image: prestashop/prestashop:9.0-apache
+      imagePullPolicy: IfNotPresent # Evita descargar la imagen si ya está presente localmente
+      restartPolicy: Always # Asegura que el contenedor se reinicie automáticamente si falla
       ports:
         - containerPort: 80
       env:
         - name: DB_SERVER
-          value: "dev-mysql.default.svc.cluster.local"
+          value: "mariadb-service"  # <-- usa el nombre del servicio
         - name: DB_USER
-          value: "root"
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: MYSQL_USER
         - name: DB_PASSWD
           valueFrom:
             secretKeyRef:
-              name: dev-mysql-secret
+              name: mariadb-secret
               key: MYSQL_PASSWORD
         - name: DB_NAME
-          value: "prestashop"
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: MYSQL_DATABASE
         - name: PS_FOLDER_ADMIN
           value: "admin4577"
         - name: PS_FOLDER_INSTALL
@@ -55,8 +64,10 @@ spec:
           value: "0"
       volumeMounts:
         - name: prestashop-data
-          mountPath: /var/www/html/prestashop
+          mountPath: /var/www/html
   volumes:
     - name: prestashop-data
-      hostPath:
-        path: /mnt/data/prestashop
+      #hostPath:
+        #path: /mnt/data/prestashop
+      persistentVolumeClaim:
+        claimName: prestashop-pvc

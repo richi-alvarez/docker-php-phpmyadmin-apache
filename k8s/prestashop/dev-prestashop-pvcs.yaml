@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mariadb-pvcs
+  name: prestashop-pvc
   labels:
-    app: mariadb-pvcs
+    app: prestashop-pvcs
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
-  storageClassName: standard
+      storage: 5Gi

@@ -8,6 +8,7 @@ spec:
   type: NodePort
   selector:
     app: dev-prestashop
+    #app: apache-local
   ports:
     - name: http
       port: 80

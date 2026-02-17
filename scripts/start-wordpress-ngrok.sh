@@ -21,7 +21,7 @@ echo "⏳ Esperando que Wordpress esté listo..."
 sleep 25
 
 echo "🌐 Iniciando ngrok para WordPress..."
-#docker-compose up -d ngrok-wordpress
+docker-compose up -d ngrok-wordpress
 
 echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4041)..."
 sleep 10
@@ -47,14 +47,14 @@ get_ngrok_url() {
     
     return 1
 }
-NGROK_URL='https://cat-tongue-happy-bio.trycloudflare.com'
-# NGROK_URL=$(get_ngrok_url)
-# if [ -z "$NGROK_URL" ]; then
-#   echo "❌ Error: no se obtuvo la URL de ngrok."
-#   echo "📋 Logs de ngrok:"
-#   docker-compose logs --tail=20 ngrok-wordpress
-#   exit 1
-# fi
+#NGROK_URL='https://randy-best-rosa-rip.trycloudflare.com'
+NGROK_URL=$(get_ngrok_url)
+if [ -z "$NGROK_URL" ]; then
+  echo "❌ Error: no se obtuvo la URL de ngrok."
+  echo "📋 Logs de ngrok:"
+  docker-compose logs --tail=20 ngrok-wordpress
+  exit 1
+fi
 
 echo "🏷️  URL configurada: $NGROK_URL"
 

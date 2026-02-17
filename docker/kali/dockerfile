@@ -1,0 +1,20 @@
+# Imagen base: Alpine Linux
+FROM alpine:latest
+
+# Instala herramientas básicas y de pentesting disponibles en Alpine
+RUN apk update && \
+    apk add --no-cache bash curl wget nano git \
+    nmap hydra john nikto netcat-openbsd tcpdump socat \
+    openssh openvpn aircrack-ng wireshark tshark
+
+# Opcional: agrega usuario no root
+RUN adduser -D kali
+
+# Establece el usuario por defecto
+USER kali
+
+# Directorio de trabajo
+WORKDIR /home/kali
+
+# Entrypoint
+CMD ["/bin/bash"]

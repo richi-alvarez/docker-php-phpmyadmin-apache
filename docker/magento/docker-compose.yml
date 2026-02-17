@@ -1,38 +1,38 @@
 services:
   magento:
     build:
-      context: .
-      dockerfile: DockerfileMagento
-    args:
-        MAGENTO_PUBLIC_KEY: ${MAGENTO_PUBLIC_KEY}
-        MAGENTO_PRIVATE_KEY: ${MAGENTO_PRIVATE_KEY}
-        XDEBUG_CLIENT_HOST: ${XDEBUG_CLIENT_HOST}
-        XDEBUG_CLIENT_PORT: ${XDEBUG_CLIENT_PORT}
+        context: .
+        dockerfile: DockerfileMagento
+        args:
+            MAGENTO_PUBLIC_KEY: ${MAGENTO_PUBLIC_KEY}
+            MAGENTO_PRIVATE_KEY: ${MAGENTO_PRIVATE_KEY}
+            XDEBUG_CLIENT_HOST: ${XDEBUG_CLIENT_HOST}
+            XDEBUG_CLIENT_PORT: ${XDEBUG_CLIENT_PORT}
     container_name: magento
     env_file:
-        - ../api.env
+        - api.env
     ports:
         - "${PORT_LOCAL}:80"
     volumes:
-        - ../../www/magento:/var/www/html
-        - ../../php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        - ./www/magento:/var/www/html
+        - ./php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     environment:
         MAGENTO_PUBLIC_KEY: ${MAGENTO_PUBLIC_KEY}
         MAGENTO_PRIVATE_KEY: ${MAGENTO_PRIVATE_KEY}
         XDEBUG_CLIENT_HOST: ${XDEBUG_CLIENT_HOST}
         XDEBUG_CLIENT_PORT: ${XDEBUG_CLIENT_PORT}
         PHP_IDE_CONFIG: serverName=www-server
-    depends_on:
-        mysql:
-            condition: service_healthy
-        opensearch:
-            condition: service_healthy
+    # depends_on:
+    #     mysql:
+    #         condition: service_healthy
+    #     opensearch:
+    #         condition: service_healthy
     networks:
     - local-network
 
   opensearch:
     image: opensearchproject/opensearch:2.2.1
-    container_name: opensearch
+    container_name: ${OPENSEARCH_HOST}
     hostname: opensearch
     environment:
       - discovery.type=single-node
@@ -44,7 +44,7 @@ services:
             soft: -1
             hard: -1
     ports:
-        - "9200:9200"
+        - "${OPENSEARCH_PORT}:9200"
     networks:
         - local-network
     restart: unless-stopped

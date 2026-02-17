@@ -15,23 +15,23 @@ spec:
         - name: PMA_ARBITRARY
           value: "1"
         - name: PMA_HOST
-          value: "dev-mysql"
+          value: "mariadb-service"   # <-- usa el nombre del servicio
         - name: PMA_PORT
           value: "3306"
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: dev-mysql-secret
+              name: mariadb-secret
               key: MYSQL_ROOT_PASSWORD
         - name: DB_NAME
           valueFrom:
             secretKeyRef:
-              name: dev-mysql-secret
+              name: mariadb-secret
               key: MYSQL_DATABASE
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: dev-mysql-secret
+              name: mariadb-secret
               key: MYSQL_PASSWORD
         
   restartPolicy: Always

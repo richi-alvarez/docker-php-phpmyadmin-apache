@@ -76,7 +76,7 @@ SQL
 #     docker-compose logs --tail=20 ngrok-prestashop
 #     exit 1
 # fi
-NGROK_URL="https://dod-centered-footage-inn.trycloudflare.com"
+NGROK_URL="https://dangerous-amp-journalism-ing.trycloudflare.com"
 echo "✅ URL inicial de ngrok encontrada: $NGROK_URL"
 
 # Actualizar PrestaShop con URL inicial
@@ -102,4 +102,8 @@ echo "❌ PrestaShop NO está disponible en localhost:8083 (solo via ngrok)"
 echo ""
 echo "🔑 Credenciales Admin:"
 echo "   Email: admin@example.com"
-echo "   Password: admin123"
+echo "   Password: Sistemas1305"
+
+#wordpress:6.9.1
+#woocommerce:10.5.0
+#cloudflare

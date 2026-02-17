@@ -43,8 +43,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 # ===============================
 # 3️⃣ Instalar y habilitar Xdebug
 # ===============================
-#RUN pecl install xdebug && docker-php-ext-enable xdebug
-#COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+COPY /php/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 #install node
 RUN curl -sL https://deb.nodesource.com/setup_22.x | bash -
