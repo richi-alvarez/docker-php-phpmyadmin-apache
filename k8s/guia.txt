@@ -4,6 +4,7 @@ eval $(minikube docker-env)
 # construir la imagen dentro de minikube
 docker build -t apache-local:latest -f ./Dockerfile .
 
+minikube image build -t apache-local:latest -f Dockerfile .
 # volver al docker host original (opcional)
 eval $(minikube docker-env -u)
 
@@ -12,7 +13,7 @@ minikube start  #para inicializar minikube
 minikube start --memory=4096 --cpus=2 --driver=docker
 minikube start --driver=docker
 minikube addons enable storage-provisioner
- minikube addons enable metrics-server
+minikube addons enable metrics-server
 kubectl create namespace webapicsharp # crear un namespace para organizar los recursos de kubernetes
 kubectl config set-context --current --namespace=webapicsharp # configurar el contexto actual para usar el namespace creado
 
@@ -40,7 +41,8 @@ kubectl apply -f k8s/dev-stack-deployment.yaml
 kubectl rollout restart deployment/dev-stack-deployment
 kubectl describe secret dev-mysql-secret
 
-kubectl rollout restart statefulset/dev-mysql
+kubectl rollout restart deployment/apache-local-deployment -n default
+
 
 kubectl apply -f k8s/dev-stack-secrets.yaml
 kubectl rollout restart statefulset/dev-mysql
@@ -49,9 +51,6 @@ kubectl apply -f k8s/dev-ingress.yaml
 minikube tunnel
 
 
-eval $(minikube docker-env)
-docker build -t apache-local:latest -f ./Dockerfile .
-eval $(minikube docker-env -u)
 # recrear pods para que tomen la imagen existente
 kubectl rollout restart deployment/dev-stack-deployment || kubectl delete pod -l app=dev-stack
 kubectl get pods -w
@@ -63,15 +62,46 @@ kubectl port-forward svc/<nombre-del-service> 8080:80
 
 minikube tunnel
 
-minikube service dev-stack-local --url -n namespace_name
+
 minikube service dev-wordpress-service --url -n webapicsharp
-#Luego abre http://192.168.58.2:30080
+#Luego abre http://192.168.49.2:30080
 
 
 
 #Para montar una carpeta local (por ejemplo, www) como volumen en tu pod de Kubernetes, debes usar un volumen de tipo hostPat
-minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www:/mnt/www
+
 minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/k8s/wordpress/www:/mnt/www/wordpress
+
+################### Apache ##########################
+minikube service dev-stack-local --url -n namespace_name
+#minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www:/mnt/www
+minikube mount --uid=33 --gid=33 /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www:/mnt/www
+
+kubectl exec -it <nombre-del-pod> -- /bin/bash
+kubectl exec -it apache-local-deployment-5f5bb59577-8t5zb -- /bin/bash
+
+minikube tunnel
+#Luego abre http://192.168.49.2:30080
+
+kubectl logs apache-local-deployment-5f5bb59577-8t5zb -c local
+
+kubectl rollout restart -n default deployment apache-local-deployment
+###################################################
+
+###################### wordpress #############################
+minikube mount --uid=33 --gid=33 /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www:/mnt/www
+kubectl logs pod_name -c wordpress
+minikube service service_name --url
+kubectl rollout restart -n default deployment dev-wordpress-deployment
+
+#acceso a pvc
+ls -l /tmp/hostpath-provisioner/default/prestashop-pvc
+
+#Accede al pod y revisa la carpeta de módulos:
+kubectl exec -it <pod-name> -- ls -l /var/www/html/modules
+kubectl exec -it dev-prestashop-deployment-6d474b96d5-dcbwp -- ls -l /var/www/html/modules
+
+kubectl logs dev-wordpress-deployment-58754659d7-4l54w -c dev-wordpress
 
 ################## prestashop ##################
 #logs
@@ -97,10 +127,11 @@ kubectl exec -it dev-prestashop-deployment-6d474b96d5-dcbwp -- ls -l /var/www/ht
 
 ################## mysql #####################
 #contenedor mysql
+kubectl rollout restart statefulset/dev-mysql
 kubectl exec -it <nombre-del-pod> -- bash
 kubectl exec -it dev-mysql-0 -- bash
 mysql -u root -p
-
+mysql -h 127.0.0.1 -u root -p
 ##############################################
 
 

@@ -23,7 +23,7 @@ spec:
               mountPath: /var/www/html
       containers:
         - name: prestashop
-          image: prestashop/prestashop:8.2.3
+          image: prestashop/prestashop:8.2.4
           imagePullPolicy: IfNotPresent # Evita descargar la imagen si ya está presente localmente
           #restartPolicy: Always # Asegura que el contenedor se reinicie automáticamente si falla
           ports:

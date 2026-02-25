@@ -15,7 +15,7 @@ echo "⏳ Esperando que phpMyAdmin esté listo..."
 sleep 10
 
 echo "🛒 Iniciando PrestaShop..."
-docker-compose up -d prestashop
+#docker-compose up -d prestashop
 
 echo "⏳ Esperando que PrestaShop esté listo..."
 sleep 10
@@ -76,7 +76,7 @@ SQL
 #     docker-compose logs --tail=20 ngrok-prestashop
 #     exit 1
 # fi
-NGROK_URL="https://dangerous-amp-journalism-ing.trycloudflare.com"
+NGROK_URL="https://pie-reactions-apply-otherwise.trycloudflare.com"
 echo "✅ URL inicial de ngrok encontrada: $NGROK_URL"
 
 # Actualizar PrestaShop con URL inicial

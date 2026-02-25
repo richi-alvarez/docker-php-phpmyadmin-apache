@@ -26,23 +26,26 @@ spec:
             - name: PHP_IDE_CONFIG
               value: "serverName=local-server"
             - name: DB_USER
-              value: "root"
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_USER
             - name: DB_HOST
-              value: "dev-mysql"
+              value: "mariadb-service"
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dev-mysql-secret
+                  name: mariadb-secret
                   key: MYSQL_ROOT_PASSWORD
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: dev-mysql-secret
+                  name: mariadb-secret
                   key: MYSQL_DATABASE
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dev-mysql-secret
+                  name: mariadb-secret
                   key: MYSQL_PASSWORD
           ports:
             - name: local-http

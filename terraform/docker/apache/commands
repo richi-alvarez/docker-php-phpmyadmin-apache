@@ -1,0 +1,7 @@
+terraform fmt && terraform init -upgrade && terraform validate
+terraform plan
+terraform import docker_network.local_network local-network
+terraform apply -auto-approve
+terraform destroy -target=docker_container.apache -auto-approve
+docker ps -a | grep apache-local-tf
+terraform state list
