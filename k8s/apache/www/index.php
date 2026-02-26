@@ -17,7 +17,7 @@ try {
 if ($mysqli->connect_errno) {
     echo "Error al conectar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 } else {
-    echo "Bienvenido!, Conexión exitosa a la base de datos!  " . $mysqli->query("SELECT DATABASE()")->fetch_row()[0];
+    echo "Bienvenido k8s!, Conexión exitosa a la base de datos!  " . $mysqli->query("SELECT DATABASE()")->fetch_row()[0];
 }
 } 
 //catch (Dotenv\Exception\InvalidPathException $e) {

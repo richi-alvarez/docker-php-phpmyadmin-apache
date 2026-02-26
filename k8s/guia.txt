@@ -1,3 +1,4 @@
+minikube delete -p minikube --all
 # abrir docker env de minikube
 eval $(minikube docker-env)
 
@@ -75,7 +76,7 @@ minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/k8s
 ################### Apache ##########################
 minikube service dev-stack-local --url -n namespace_name
 #minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www:/mnt/www
-minikube mount --uid=33 --gid=33 /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/www:/mnt/www
+minikube mount --uid=33 --gid=33 /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/k8s/apache/www:/mnt/www
 
 kubectl exec -it <nombre-del-pod> -- /bin/bash
 kubectl exec -it apache-local-deployment-5f5bb59577-8t5zb -- /bin/bash
@@ -129,7 +130,7 @@ kubectl exec -it dev-prestashop-deployment-6d474b96d5-dcbwp -- ls -l /var/www/ht
 #contenedor mysql
 kubectl rollout restart statefulset/dev-mysql
 kubectl exec -it <nombre-del-pod> -- bash
-kubectl exec -it dev-mysql-0 -- bash
+kubectl exec -it dev-mysql-stateful-0 -- bash
 mysql -u root -p
 mysql -h 127.0.0.1 -u root -p
 ##############################################

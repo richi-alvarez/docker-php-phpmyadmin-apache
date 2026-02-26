@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: dev-mysql
+  name: dev-mysql-stateful
   labels:
-    app: dev-mysql
+    app: dev-mysql-stateful
 spec:
-  serviceName: dev-mysql
+  serviceName: dev-mysql-stateful
   replicas: 1
   selector:
     matchLabels:
-      app: dev-mysql
+      app: dev-mysql-stateful
   template:
     metadata:
       labels:
-        app: dev-mysql
+        app: dev-mysql-stateful
     spec:
       restartPolicy: Always
       containers:
