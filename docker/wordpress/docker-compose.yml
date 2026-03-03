@@ -1,0 +1,133 @@
+services:
+     # docker compose -f 'docker-compose.yml' up -d --build 'mysql'
+    mysql:
+        #container_name: mysql
+        #image: mariadb:10.6.4-focal
+        image: mysql:8.0
+        #image: mysql:5.7
+        #image: mysql:5.5
+        restart: always
+        ports: 
+            - "3308:3306"
+        command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
+        #command: --default-authentication-plugin=caching_sha2_password
+        environment:
+            MYSQL_DATABASE: wordpress
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+            #MYSQL_USER: root
+        volumes:
+            #- ./mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
+            #- ./mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
+            #- ./mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
+            #- ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
+            #- ./mysql/init-magento.sql:/docker-entrypoint-initdb.d/init-magento.sql
+            #- ./conf:/etc/mysql/conf.d
+            - persistent:/var/lib/mysql
+        networks:
+            - local-network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptest"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+    # docker compose -f 'docker-compose.yml' --env-file ./docker/api.env up -d --build 'local'
+    # local:
+    #     build: .
+    #     container_name: local
+    #     restart: always
+    #     env_file:
+    #         - ./docker/api.env
+    #     ports: 
+    #         - "${PORT_LOCAL}:80"
+    #     volumes:
+    #         - ./www:/var/www/html
+    #         #- ./config:/usr/local/etc/php
+    #         #- ./php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    #     environment:
+    #         DB_HOST: ${DB_HOST:-mysql}
+    #         DB_USER: ${DB_USER:-root}
+    #         DB_PASSWORD: ${DB_PASSWORD:-test}
+    #         DB_NAME: ${DB_NAME:-wordpress}
+    #         XDEBUG_CLIENT_HOST: ${XDEBUG_CLIENT_HOST:-172.17.0.1}
+    #         XDEBUG_CLIENT_PORT: ${XDEBUG_CLIENT_PORT:-9004}
+    #         PHP_IDE_CONFIG: serverName=local-server
+    #     links:
+    #         - mysql
+    #     networks:
+    #         - local-network
+
+    wordpress:
+        env_file:
+            - ../api.env
+        image: wordpress:latest
+        restart: unless-stopped
+        depends_on:
+            - mysql
+        ports:
+            - "${PORT_LOCAL}:80"
+        environment:
+            WORDPRESS_DB_HOST: ${DB_HOST:-mysql}
+            WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+            WORDPRESS_DB_USER: ${DB_USER:-root}
+            WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-test}
+            # 🌐 Configuración para ngrok
+            #WORDPRESS_HOME: "${WP_HOME:-http://localhost:8081}"
+            #WORDPRESS_SITEURL: "${WP_SITEURL:-http://localhost:8081}"
+            # Configuraciones adicionales
+            WORDPRESS_DEBUG: 1
+            WORDPRESS_CONFIG_EXTRA: |
+                define('WP_DEBUG', true);
+                define('WP_DEBUG_LOG', true);
+                define('WP_DEBUG_DISPLAY', false);
+                define('FS_METHOD', 'direct');
+        networks:
+            - local-network
+        volumes:
+            - ./www:/var/www/html
+            - ./config/php.ini:/usr/local/etc/php/conf.d/php.ini
+    
+    playwright:
+        image: mcr.microsoft.com/playwright:v1.42.1-jammy
+        container_name: playwright
+        restart: always
+        working_dir: /tests
+        volumes:
+            - ./www/e2e:/tests
+        depends_on:
+            - wordpress
+        #environment:
+            # Configura el entorno para Playwright si es necesario
+            # Por ejemplo, puedes establecer variables de entorno para la URL de tu aplicación
+            #APP_URL: "http://local:${PORT_LOCAL}"
+        command: npx playwright test
+        networks:
+            - local-network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - mysql:mysql
+        ports:
+            - 8089:80
+        restart: always
+        environment:
+            PMA_ARBITRARY: 1
+            PMA_HOST: mysql
+            MYSQL_USER: root
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+        depends_on:
+            mysql:
+                condition: service_healthy
+        networks:
+            - local-network
+   
+
+volumes:
+    psdata:
+    persistent: {}
+    mysql_joomla_data: {}
+
+networks:
+    local-network:

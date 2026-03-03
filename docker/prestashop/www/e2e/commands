@@ -1,0 +1,5 @@
+BASE_URL=https://e9bf-44-223-225-99.ngrok-free.app/en/ FLOW=cash TX_COUNT=1 npm run test:payments
+
+BASE_URL=https://e9bf-44-223-225-99.ngrok-free.app/en/ FLOW=card CARD_STATE=aceptada TX_COUNT=1 npm run test:payments
+
+BASE_URL=https://e9bf-44-223-225-99.ngrok-free.app/en/ FLOW=pse TX_COUNT=1 npm run test:payments
