@@ -8,8 +8,12 @@ echo "2) WordPress"
 echo "3) OpenCart"
 echo "4) Apache Local"
 echo "5) Joomla"
+<<<<<<< HEAD
 echo "6) Magento"
 echo "7) Todos los servicios (sin ngrok)"
+=======
+echo "6) Todos los servicios (sin ngrok)"
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
 echo ""
 read -p "Selecciona una opción (1-5): " choice
 
@@ -35,10 +39,13 @@ case $choice in
     ./scripts/start-joomla-ngrok.sh
     ;;
   6)
+<<<<<<< HEAD
     echo "🐳 Configurando ngrok para Magento local..."
     ./scripts/start-magento-ngrok.sh
     ;;
   7)
+=======
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
     echo "🚀 Iniciando todos los servicios localmente..."
     docker-compose up -d mysql local prestashop wordpress  magento phpmyadmin
     echo ""

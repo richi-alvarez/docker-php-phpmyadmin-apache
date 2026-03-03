@@ -2,6 +2,7 @@
 # filepath: ./scripts/start-joomla-ngrok.sh
 set -e
 
+<<<<<<< HEAD
 JOOMLA_DIR="./www/joomla"
 
 echo "🚀 Iniciando MySQL..."
@@ -9,11 +10,19 @@ docker-compose up -d mysql-joomla
 
 echo "⏳ Esperando que MySQL esté listo..."
 sleep 10
+=======
+echo "🚀 Iniciando MySQL..."
+docker-compose up -d mysql
+
+echo "⏳ Esperando que MySQL esté listo..."
+sleep 15
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
 
 echo "🚀 Iniciando phpMyAdmin..."
 docker-compose up -d phpmyadmin
 
 echo "⏳ Esperando que phpMyAdmin esté listo..."
+<<<<<<< HEAD
 sleep 10
 
 # Verificar si el directorio de Joomla existe
@@ -39,11 +48,15 @@ if [ -z "$(ls -A $JOOMLA_DIR 2>/dev/null)" ]; then
     rm -f /tmp/joomla.tar.gz
     rm -rf "/tmp/joomla-cms-${JOOMLA_VERSION}"
 fi
+=======
+sleep 15
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
 
 echo "🛒 Iniciando Joomla..."
 docker-compose up -d joomla
 
 echo "⏳ Esperando que Joomla esté listo..."
+<<<<<<< HEAD
 sleep 10
 
 #echo "🌐 Iniciando ngrok para Joomla..."
@@ -80,12 +93,40 @@ if [ -z "$NGROK_URL" ]; then
   exit 1
 fi
 #NGROK_URL="https://yea-commerce-screenshot-packing.trycloudflare.com"
+=======
+sleep 25
+
+echo "🌐 Iniciando ngrok para Joomla..."
+docker-compose up -d ngrok
+
+echo "📡 Esperando la URL de ngrok (dashboard en http://localhost:4041)..."
+sleep 10
+NGROK_URL=""
+for i in $(seq 1 30); do
+  NGROK_URL=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
+    | grep -o '"public_url":"https://[^"]*' | cut -d'"' -f4 | head -1 || true)
+  if [ -n "$NGROK_URL" ]; then
+    echo "✅ URL de ngrok encontrada: $NGROK_URL"
+    break
+  fi
+  echo "  🔄 Intento $i/30..."
+  sleep 3
+done
+
+if [ -z "$NGROK_URL" ]; then
+  echo "❌ Error: no se obtuvo la URL de ngrok."
+  echo "📋 Logs de ngrok:"
+  docker-compose logs --tail=20 ngrok
+  exit 1
+fi
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
 
 echo "🏷️  URL configurada: $NGROK_URL"
 
 DOMAIN=$(echo "$NGROK_URL" | sed 's|https://||; s|http://||')
 echo "🏷️  Configurando Joomla para usar solo: $DOMAIN"
 
+<<<<<<< HEAD
 # Verificar si Joomla ya está instalado
 if [ ! -f "$JOOMLA_DIR/configuration.php" ]; then
     echo "🔧 Instalando y configurando Joomla..."
@@ -112,12 +153,20 @@ else
 # EOF
 fi
 
+=======
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
 echo ""
 echo "🎉 Joomla configurado exitosamente con ngrok!"
 echo ""
 echo "📋 URLs disponibles:"
 echo "🌐 Joomla Sitio:      $NGROK_URL"
 echo "⚙️  Joomla Admin:      $NGROK_URL/administrator"
+<<<<<<< HEAD
 echo "🌐 Ngrok Dashboard:      http://localhost:4044"
 echo "🗄️  phpMyAdmin:          http://localhost:8089"
+=======
+echo "🌐 Ngrok Dashboard:      http://localhost:4041"
+echo "🗄️  phpMyAdmin:          http://localhost:8089"
+echo "🐳 Apache Local:         http://localhost:86"
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
 echo "🛒 Joomla Local:     http://localhost:8082"

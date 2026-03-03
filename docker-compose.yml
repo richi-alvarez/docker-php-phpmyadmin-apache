@@ -19,9 +19,14 @@ services:
         volumes:
             #- ./mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
             - ./mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
+<<<<<<< HEAD
             #- ./mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
             #- ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
             #- ./mysql/init-magento.sql:/docker-entrypoint-initdb.d/init-magento.sql
+=======
+            - ./mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
+            - ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
             #- ./conf:/etc/mysql/conf.d
             - persistent:/var/lib/mysql
         networks:
@@ -167,6 +172,7 @@ services:
         volumes:
             - ./www:/var/www/html
             - ./config/php.ini:/usr/local/etc/php/conf.d/php.ini
+<<<<<<< HEAD
 
     ngrok-wordpress:
         image: ngrok/ngrok:latest
@@ -209,6 +215,26 @@ services:
             interval: 10s
             timeout: 5s
             retries: 10
+=======
+    
+    joomla:
+        container_name: joomla
+        image: joomla:5.4.0
+        restart: unless-stopped
+        depends_on:
+            - mysql
+        #ports:
+            #- 8084:80
+        environment:
+            JOOMLA_DB_HOST: mysql
+            JOOMLA_DB_NAME: joomla
+            JOOMLA_DB_USER: root
+            JOOMLA_DB_PASSWORD: test
+        networks:
+            - local-network
+        volumes:
+            - ./www/joomla:/var/www/html
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
 
     prestashop:
         container_name: prestashop
@@ -384,6 +410,7 @@ services:
                 condition: service_healthy
         networks:
             - local-network
+<<<<<<< HEAD
 
     opensearch:
         image: opensearchproject/opensearch:2.2.1
@@ -398,6 +425,18 @@ services:
             memlock:
                 soft: -1
                 hard: -1
+=======
+    ngrok:
+        image: ngrok/ngrok:latest
+        container_name: ngrok
+        restart: always
+        depends_on:
+           - joomla
+        environment:
+            # Set NGROK_AUTHTOKEN in your shell or in a .env file
+            NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+        command: ["http", "joomla:80"]
+>>>>>>> 4e42f22 (feat:se agrega virtuemart)
         ports:
             - "9200:9200"
         networks:

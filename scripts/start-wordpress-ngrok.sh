@@ -52,7 +52,7 @@ NGROK_URL=$(get_ngrok_url)
 if [ -z "$NGROK_URL" ]; then
   echo "❌ Error: no se obtuvo la URL de ngrok."
   echo "📋 Logs de ngrok:"
-  docker-compose logs --tail=20 ngrok-wordpress
+  docker-compose logs --tail=20 ngrok
   exit 1
 fi
 
@@ -60,20 +60,6 @@ echo "🏷️  URL configurada: $NGROK_URL"
 
 DOMAIN=$(echo "$NGROK_URL" | sed 's|https://||; s|http://||')
 echo "🏷️  Configurando Wordpress para usar solo: $DOMAIN"
-
-echo "🔧 Actualizando URLs en la base de datos de WordPress..."
-# docker-compose exec -T mysql mysql -u root -ptest wordpress <<SQL || { echo "❌ Error actualizando DB"; exit 1; }
-# UPDATE wp_options SET option_value = '${NGROK_URL}' WHERE option_name = 'home';
-# UPDATE wp_options SET option_value = '${NGROK_URL}' WHERE option_name = 'siteurl';
-# SELECT CONCAT('WordPress configurado para: ', '${NGROK_URL}') as resultado;
-# SQL
-
-
-echo "🔄 Reiniciando WordPress para aplicar cambios..."
-docker-compose restart wordpress
-
-echo "⏳ Esperando que WordPress reinicie..."
-sleep 15
 
 echo ""
 echo "🎉 ¡WordPress configurado exitosamente con ngrok!"
