@@ -1,0 +1,123 @@
+services:
+     # docker compose -f 'docker-compose.yml' up -d --build 'mysql'
+    mysql:
+        #container_name: mysql
+        #image: mariadb:10.6.4-focal
+        image: mysql:8.0
+        #image: mysql:5.7
+        #image: mysql:5.5
+        restart: always
+        ports: 
+            - "3308:3306"
+        command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
+        #command: --default-authentication-plugin=caching_sha2_password
+        environment:
+            MYSQL_DATABASE: prestashop
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+            #MYSQL_USER: root
+        volumes:
+            #- ./mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
+            #- ./mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
+            #- ./mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
+            #- ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
+            #- ./mysql/init-magento.sql:/docker-entrypoint-initdb.d/init-magento.sql
+            #- ./conf:/etc/mysql/conf.d
+            - persistent:/var/lib/mysql
+        networks:
+            - local-network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptest"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+
+    prestashop:
+        container_name: prestashop
+        #image: prestashop/prestashop:8.2.3
+        image: prestashop/prestashop:8.2.4
+        #image: prestashop/prestashop:9.0-apache
+        restart: unless-stopped
+        depends_on:
+            - mysql
+        ports:
+            - 8083:80
+        environment:
+            DB_SERVER: mysql
+            DB_NAME: prestashop
+            DB_USER: root
+            DB_PASSWD: test
+            #PS_FOLDER_ADMIN: admin4577
+            #PS_FOLDER_INSTALL: install4577
+            PS_INSTALL_AUTO: 0        # ⚡ Instalación automática
+            PS_DEV_MODE: 1            # ⚡ Habilita modo desarrollador
+            PS_LANGUAGE: es           # Idioma por defecto
+            PS_COUNTRY: CO            # País por defecto
+            PS_TIMEZONE: America/Bogota
+            PS_CURRENCY: COP              # Moneda predeterminada (Peso Colombiano)
+            ADMIN_MAIL: admin@example.com  # 🔑 Usuario admin del Back Office
+            ADMIN_PASSWD: Sistemas1305        # 🔑 Contraseña admin
+            #PS_ERASE_DB: 1
+            #PS_INSTALL_DB: 1
+            # 🌐 Configuración para ngrok
+            #PS_DOMAIN: "localhost:8082"
+            #PS_SHOP_DOMAIN: "localhost:8082"
+            #PS_SHOP_DOMAIN_SSL: "localhost:8082"
+            #PS_SSL_ENABLED: 0
+            #PS_DOMAIN: "${PS_DOMAIN:-localhost:8083}"
+            #PS_SHOP_DOMAIN: "${PS_SHOP_DOMAIN:-localhost:8083}"
+            #PS_SHOP_DOMAIN_SSL: "${PS_SHOP_DOMAIN_SSL:-localhost:8083}"
+            #PS_SSL_ENABLED: "${PS_SSL_ENABLED:-0}"
+            #PS_SSL_ENABLED_EVERYWHERE: "${PS_SSL_ENABLED_EVERYWHERE:-0}"
+        networks:
+        - local-network
+        volumes:
+        #- ./www/prestashop/modules:/var/www/html/modules
+        #- ./www/prestashop/themes:/var/www/html/themes
+        - ./www:/var/www/html
+        #- psdata:/var/www/html
+        - ./config/app.ini:/usr/local/etc/php/conf.d/app.ini
+    
+    playwright:
+        image: mcr.microsoft.com/playwright:v1.42.1-jammy
+        container_name: playwright
+        restart: always
+        working_dir: /tests
+        volumes:
+            - ./www/e2e:/tests
+        depends_on:
+            - prestashop
+        #environment:
+            # Configura el entorno para Playwright si es necesario
+            # Por ejemplo, puedes establecer variables de entorno para la URL de tu aplicación
+            #APP_URL: "http://local:${PORT_LOCAL}"
+        command: npx playwright test
+        networks:
+            - local-network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - mysql:mysql
+        ports:
+            - 8089:80
+        restart: always
+        environment:
+            PMA_ARBITRARY: 1
+            PMA_HOST: mysql
+            MYSQL_USER: root
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+        depends_on:
+            mysql:
+                condition: service_healthy
+        networks:
+            - local-network
+   
+
+volumes:
+    www:
+    persistent: {}
+
+networks:
+    local-network:

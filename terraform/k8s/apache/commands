@@ -1,0 +1,20 @@
+terraform fmt && terraform init -upgrade && terraform validate
+terraform plan
+terraform apply -auto-approve
+
+################### Apache ##########################
+minikube service dev-stack-local --url -n namespace_name
+#Para montar una carpeta local (por ejemplo, www) como volumen en tu pod de Kubernetes, debes usar un volumen de tipo hostPat
+#minikube mount /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/docker/apache/www:/mnt/www
+minikube mount --uid=33 --gid=33 /home/epayco21/Escritorio/github/docker-php-phpmyadmin-apache/docker/apache/www:/mnt/www
+
+kubectl exec -it <nombre-del-pod> -- /bin/bash
+kubectl exec -it apache-local-deployment-5f5bb59577-8t5zb -- /bin/bash
+
+minikube tunnel
+#Luego abre http://192.168.49.2:30080
+
+kubectl logs apache-local-deployment-5f5bb59577-8t5zb -c local
+
+kubectl rollout restart -n default deployment apache-local-deployment
+###################################################

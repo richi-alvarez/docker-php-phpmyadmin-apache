@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-prestashop-deployment
+  labels:
+    app: dev-prestashop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dev-prestashop
+  template:
+    metadata:
+      labels:
+        app: dev-prestashop
+    spec:
+      initContainers: # Agrega un initContainer para corregir los permisos antes de iniciar el contenedor principal
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 33:33 /var/www/html && chmod -R 775 /var/www/html"]
+          volumeMounts:
+            - name: prestashop-data
+              mountPath: /var/www/html
+      containers:
+        - name: prestashop
+          image: prestashop/prestashop:8.2.3
+          imagePullPolicy: IfNotPresent # Evita descargar la imagen si ya está presente localmente
+          #restartPolicy: Always # Asegura que el contenedor se reinicie automáticamente si falla
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_SERVER
+              value: "mariadb-service"  # <-- usa el nombre del servicio
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_USER
+            - name: DB_PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_DATABASE
+            - name: PS_FOLDER_ADMIN
+              value: "admin4577"
+            - name: PS_FOLDER_INSTALL
+              value: "install4577"
+            - name: PS_INSTALL_AUTO
+              value: "1"
+            - name: PS_DEV_MODE
+              value: "1"
+            - name: PS_LANGUAGE
+              value: "es"
+            - name: PS_COUNTRY
+              value: "CO"
+            - name: PS_TIMEZONE
+              value: "America/Bogota"
+            - name: PS_CURRENCY
+              value: "COP"
+            - name: ADMIN_MAIL
+              value: "admin@example.com"
+            - name: ADMIN_PASSWD
+              value: "admin123"  
+            - name: PS_DOMAIN
+              value: "192.168.49.2:30083"
+            - name: PS_SHOP_DOMAIN
+              value: "192.168.49.2:30083"
+            - name: PS_SHOP_DOMAIN_SSL
+              value: "192.168.49.2:30083"
+            - name: PS_SSL_ENABLED
+              value: "0"
+            - name: PS_SSL_ENABLED_EVERYWHERE
+              value: "0"
+          volumeMounts:
+            - name: prestashop-data
+              mountPath: /var/www/html
+      volumes:
+        - name: prestashop-data
+          #hostPath: #Usa hostPath solo para desarrollo local, pero puede causar problemas de permisos. Es mejor usar un PersistentVolumeClaim.
+            #path: /mnt/data/prestashop
+          persistentVolumeClaim: # Usa un PersistentVolumeClaim en lugar de hostPath para evitar problemas de permisos
+            claimName: prestashop-pvc

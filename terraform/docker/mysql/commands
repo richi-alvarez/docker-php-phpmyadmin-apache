@@ -1,0 +1,7 @@
+terraform fmt && terraform init -upgrade && terraform validate
+terraform plan
+terraform apply -auto-approve
+
+#ingresar al contenedor
+#docker exec -it mysql bash
+#mysql -h 127.0.0.1 -u root -p

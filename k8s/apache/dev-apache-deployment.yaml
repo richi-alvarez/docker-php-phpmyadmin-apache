@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-local-deployment
+  labels:
+    app: apache-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache-local
+  template:
+    metadata:
+      labels:
+        app: apache-local
+    spec:
+      containers:
+        - name: local
+          image: apache-local:latest
+          imagePullPolicy: Never
+          env:
+            - name: XDEBUG_CLIENT_HOST
+              value: "172.17.0.1"
+            - name: XDEBUG_CLIENT_PORT
+              value: "9004"
+            - name: PHP_IDE_CONFIG
+              value: "serverName=local-server"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_USER
+            - name: DB_HOST
+              value: "mariadb-service"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_DATABASE
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MYSQL_PASSWORD
+          ports:
+            - name: local-http
+              containerPort: 80
+          volumeMounts:
+            - name: www-data
+              mountPath: /var/www/html
+      # emptyDir volumes are fine for single-replica development deployments
+      volumes:
+        - name: www-data
+          hostPath:
+            path: /mnt/www

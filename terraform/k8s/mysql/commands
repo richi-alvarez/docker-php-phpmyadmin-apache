@@ -1,0 +1,14 @@
+terraform fmt && terraform init -upgrade && terraform validate
+terraform plan
+terraform apply -auto-approve -refresh=false -target=kubernetes_persistent_volume_claim_v1.mariadb_pvcs
+terraform apply -auto-approve 
+terraform destroy
+
+################## mysql #####################
+#contenedor mysql
+kubectl rollout restart statefulset/dev-mysql-stateful
+kubectl exec -it <nombre-del-pod> -- bash
+kubectl exec -it dev-mysql-stateful-0 -- bash
+mysql -u root -p
+mysql -h 127.0.0.1 -u root -p
+##############################################
