@@ -56,9 +56,9 @@ if (!class_exists('EpaycoOrder')) {
 final class HandleTransactionFunctionalTest extends TestCase
 {
     private const X_COD_TRANSACTION_STATE = 1;
-    private const X_REF_PAYCO = '101766974';
-    private const X_APPROVAL_CODE = '48771874243453';
-    private const X_FRANCHISE = 'GA';
+    private const X_REF_PAYCO = '';
+    private const X_APPROVAL_CODE = '';
+    private const X_FRANCHISE = '';
     private const X_FECHA_TRANSACCION = '2026-03-02 13:34:39';
     private const ID_ORDER = 94;
     private const END_ORDER_STATE = 'processing';

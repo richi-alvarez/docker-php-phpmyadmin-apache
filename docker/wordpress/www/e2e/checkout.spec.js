@@ -1,41 +1,17 @@
 const { test, expect } = require('@playwright/test');
 
-test('procesa checkout con método de pago ePayco', async ({ page }, testInfo) => {
+test('epayco-woocommerce', async ({ page }, testInfo) => {
   test.setTimeout(240000);
 
-  const checkoutEmail = 'ricardo.saldarriaga@epayco.com';
-  const checkoutPhone = '3184210294';
-  const checkoutDocument = '1214723219';
-  const epaycoFlow = (process.env.EPAYCO_FLOW || 'credit_card').toLowerCase();
-  const cardProfiles = {
-    aceptada: { number: '4575623182290326', expiration: '12/27', cvv: '123', state: 'aceptada' },
-    rechazada: { number: '4151611527583283', expiration: '12/27', cvv: '123', state: 'rechazada' },
-    fallida: { number: '5170394490379427', expiration: '12/27', cvv: '123', state: 'fallida' },
-    pendiente: { number: '373118856457642', expiration: '12/27', cvv: '123', state: 'pendiente' },
-    'fondos insuficientes': { number: '4151611527583283', expiration: '12/27', cvv: '123', state: 'rechazada' },
-  };
-  const requestedCardState = (process.env.CARD_STATE || 'fallida').toLowerCase();
-  const selectedCardProfile = cardProfiles[requestedCardState] || cardProfiles.aceptada;
-  const acceptedCardProfile = cardProfiles.aceptada;
-  const failureScreenshotPath = testInfo.outputPath('checkout-error-or-block.png');
-  const refPaycoScreenshotPath = testInfo.outputPath(`ref-payco-${epaycoFlow}.png`);
-
-  const fillFirstVisible = async (selectors, value) => {
-    for (const selector of selectors) {
-      const input = page.locator(selector).first();
-      const isVisible = await input.isVisible().catch(() => false);
-      if (!isVisible) continue;
-      await input.fill(value);
-      return true;
-    }
-    return false;
-  };
-
+  
   try {
     await page.goto('/producto/camisa-roja/', { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'Añadir al carrito' }).first().click();
     await page.getByRole('link', { name: /Finalizar compra/i }).first().click();
     await page.waitForURL(/finalizar-compra/i, { timeout: 30000 });
+
+    const checkoutEmail = '';
+    const checkoutPhone = '';
 
     await fillFirstVisible(['#email:visible', 'input[name="contact_email"]:visible'], checkoutEmail);
     await fillFirstVisible(['#shipping-first_name:visible', 'input[name="shipping_first_name"]:visible'], 'Ricardo');
@@ -54,7 +30,34 @@ test('procesa checkout con método de pago ePayco', async ({ page }, testInfo) =
     await placeOrder.click({ noWaitAfter: true });
 
     await page.waitForURL(/order-pay|finalizar-compra\/order-pay/i, { timeout: 60000 });
+    
+    /////////////////////////////////////////////////////////////////////////
     await page.waitForTimeout(5000);
+    const checkoutDocument = '';
+    const epaycoFlow = (process.env.EPAYCO_FLOW || 'credit_card').toLowerCase();
+    const cardProfiles = {
+      aceptada: { number: '4575623182290326', expiration: '12/27', cvv: '123', state: 'aceptada' },
+      rechazada: { number: '4151611527583283', expiration: '12/27', cvv: '123', state: 'rechazada' },
+      fallida: { number: '5170394490379427', expiration: '12/27', cvv: '123', state: 'fallida' },
+      pendiente: { number: '373118856457642', expiration: '12/27', cvv: '123', state: 'pendiente' },
+      'fondos insuficientes': { number: '4151611527583283', expiration: '12/27', cvv: '123', state: 'rechazada' },
+    };
+    const requestedCardState = (process.env.CARD_STATE || 'fallida').toLowerCase();
+    const selectedCardProfile = cardProfiles[requestedCardState] || cardProfiles.aceptada;
+    const acceptedCardProfile = cardProfiles.aceptada;
+    const failureScreenshotPath = testInfo.outputPath('checkout-error-or-block.png');
+    const refPaycoScreenshotPath = testInfo.outputPath(`ref-payco-${epaycoFlow}.png`);
+
+    const fillFirstVisible = async (selectors, value) => {
+      for (const selector of selectors) {
+        const input = page.locator(selector).first();
+        const isVisible = await input.isVisible().catch(() => false);
+        if (!isVisible) continue;
+        await input.fill(value);
+        return true;
+      }
+      return false;
+    };
 
     const epaycoIframe = page.locator('iframe[title="ePayco Checkout V2"]').first();
     let iframeVisible = await epaycoIframe.isVisible({ timeout: 30000 }).catch(() => false);

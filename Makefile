@@ -26,8 +26,8 @@ start: ## Start the containers
 	docker network create www-network || true
 	U_ID=${UID} docker compose up -d --build
 
-start-wordpress: ## Start only the wordpress container
-	U_ID=${UID} docker-compose -f docker-compose-debug.yml --env-file ./docker/api.env stop
+start-wordpress: ## Start mysql + local (WordPress on PORT_LOCAL)
+	U_ID=${UID} docker compose -f 'docker-compose.yml' --env-file ./docker/api.env up -d --build 'mysql' 'local'
 
 stop: ## Stop the containers
 	U_ID=${UID} docker compose stop
@@ -57,3 +57,15 @@ ssh-be: ## bash into the be container
 	U_ID=${UID} docker exec -it --user ${UID} ${DOCKER_BE} bash
 
 composer create-project drupal-composer/drupal-project:7.x-dev -n my_drupal
+
+start-mysql: ## Start mysql container
+	U_ID=${UID} docker compose -f 'docker-compose.yml' up -d --build 'mysql'
+
+start-apache: ## Start the containers in local mode
+	U_ID=${UID} docker compose -f 'docker-compose.yml' --env-file ./docker/api.env up -d --build 'local'
+
+start-apache-wordpress: ## Alias of start-wordpress
+	$(MAKE) start-wordpress
+
+install-woocommerce: ## Wait for DB/WordPress and install WooCommerce
+	bash ./scripts/install-woocommerce.sh

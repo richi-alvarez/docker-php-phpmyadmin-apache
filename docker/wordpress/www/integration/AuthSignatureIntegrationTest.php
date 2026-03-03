@@ -6,13 +6,13 @@ use PHPUnit\Framework\TestCase;
 
 final class AuthSignatureIntegrationTest extends TestCase
 {
-    private const EPAYCO_CUSTOMER_ID = '627579';
-    private const EPAYCO_SECRET_KEY = '170e3e02b3aa6086c6c020a25b1a7ff2e7c52585';
-    private const X_REF_PAYCO = '101766906';
-    private const X_TRANSACTION_ID = '48771874234886';
-    private const X_AMOUNT = '38000';
-    private const X_CURRENCY_CODE = 'COP';
-    private const EXPECTED_SIGNATURE = '466066ff5ff33d13456ae75a0c2764ce6ec3af7257f78ae23210735b0a01c634';
+    private const EPAYCO_CUSTOMER_ID = '';
+    private const EPAYCO_SECRET_KEY = '';
+    private const X_REF_PAYCO = '';
+    private const X_TRANSACTION_ID = '';
+    private const X_AMOUNT = '';
+    private const X_CURRENCY_CODE = '';
+    private const EXPECTED_SIGNATURE = '';
 
     public function test_auth_signature_matches_expected_value(): void
     {

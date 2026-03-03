@@ -60,6 +60,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin \
     --filename=composer \
     --version=2.7.0
+
+# ===============================
+# 2.1 Instalar WP-CLI
+# ===============================
+RUN curl -fsSL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x /usr/local/bin/wp \
+    && wp --info --allow-root
 # ===============================
 # 3️⃣ Instalar y habilitar Xdebug
 # ===============================
@@ -113,6 +120,24 @@ COPY www/ /var/www/html
 # ===============================
 # 9️⃣ Configurar Apache
 # ===============================
-RUN a2enmod headers rewrite
 
+# ===============================
+# 1️⃣0️⃣ Habilitar módulos de Apache
+RUN a2enmod headers rewrite
+# ===============================
+
+# ===============================
+# 1️⃣1️⃣ Exponer puerto
+# ==============================
 EXPOSE 80
+
+# ===============================
+# 1️⃣2️⃣ Comando de inicio
+CMD ["apache2-foreground"]  
+# ===============================
+
+# ===============================
+# 1️⃣3️⃣ Nota: instalación de plugins de WordPress en runtime
+# ===============================
+# No ejecutar `wp plugin install ...` en build porque requiere una instalación
+# de WordPress inicializada y conexión a base de datos disponible.

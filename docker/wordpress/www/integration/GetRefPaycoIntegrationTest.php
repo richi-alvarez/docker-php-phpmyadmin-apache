@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 final class GetRefPaycoIntegrationTest extends TestCase
 {
-    private const DEFAULT_REF_PAYCO = '69a5d065309b37a447d842dc';
+    private const DEFAULT_REF_PAYCO = '';
 
     public function test_get_ref_payco_with_real_endpoint(): void
     {
