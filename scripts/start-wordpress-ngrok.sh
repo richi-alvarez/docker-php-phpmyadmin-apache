@@ -71,6 +71,15 @@ echo "🏷️  URL configurada: $NGROK_URL"
 DOMAIN=$(echo "$NGROK_URL" | sed 's|https://||; s|http://||')
 echo "🏷️  Configurando Wordpress para usar solo: $DOMAIN"
 
+#
+#UPDATE wp_options 
+#SET option_value = $DOMAIN 
+#WHERE option_name = 'siteurl';
+
+#UPDATE wp_options 
+#SET option_value = $DOMAIN 
+#WHERE option_name = 'home';
+#
 echo ""
 echo "🎉 ¡WordPress configurado exitosamente con ngrok!"
 echo ""

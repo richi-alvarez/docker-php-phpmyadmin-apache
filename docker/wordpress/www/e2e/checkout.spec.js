@@ -1488,7 +1488,7 @@ test('epayco-checkout', async ({ page }, testInfo) => {
 
     };
 
-    //await runEpaycoPopupFlow();
+    await runEpaycoPopupFlow();
     //await page.screenshot({ path: testInfo.outputPath('final-checkout.png'), fullPage: true }).catch(() => {});
 
     ///////////////////////////////////////////////////////////////////////
