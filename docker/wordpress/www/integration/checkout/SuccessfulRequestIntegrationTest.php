@@ -271,9 +271,9 @@ final class SuccessfulRequestIntegrationTest extends TestCase
             $this->markTestSkipped('No existe la orden real con ID ' . $orderId . '.');
         }
 
-        $order->update_status('pending');
-        $order->update_meta_data('refPayco', '');
-        $order->save();
+        // $order->update_status('pending');
+        // $order->update_meta_data('refPayco', '');
+        // $order->save();
 
         $realTotal = (string) ((float) $order->get_total());
         if ($realTotal !== '' && (float) $realTotal > 0) {

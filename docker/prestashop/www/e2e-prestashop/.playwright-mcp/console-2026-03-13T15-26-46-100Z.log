@@ -1,0 +1,17 @@
+[     532ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     535ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     539ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     553ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     933ms] [WARNING] JQMIGRATE: jQuery.fn.click() event shorthand is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     963ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   17710ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   17712ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   17715ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   17725ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   17783ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   29937ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   29943ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   29945ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   29954ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   29986ms] [WARNING] JQMIGRATE: jQuery.fn.submit() event shorthand is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[   30003ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9

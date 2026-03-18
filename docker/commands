@@ -1,0 +1,3 @@
+docker image build --tag notes-api .
+docker container run --rm --name notes-api --publish 3000:3000 notes-api:latest
+docker container run --rm --detach --name=notes-db --env POSTGRES_DB=notesdb --env POSTGRES_PASSWORD=secret postgres:12

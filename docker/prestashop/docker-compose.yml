@@ -17,12 +17,6 @@ services:
             MYSQL_ROOT_PASSWORD: test
             #MYSQL_USER: root
         volumes:
-            #- ./mysql/init-wordpress.sql:/docker-entrypoint-initdb.d/init-wordpress.sql
-            #- ./mysql/init-prestashop.sql:/docker-entrypoint-initdb.d/init-prestashop.sql
-            #- ./mysql/init-opencart.sql:/docker-entrypoint-initdb.d/init-opencart.sql
-            #- ./mysql/init-joomla.sql:/docker-entrypoint-initdb.d/init-joomla.sql
-            #- ./mysql/init-magento.sql:/docker-entrypoint-initdb.d/init-magento.sql
-            #- ./conf:/etc/mysql/conf.d
             - persistent:/var/lib/mysql
         networks:
             - local-network

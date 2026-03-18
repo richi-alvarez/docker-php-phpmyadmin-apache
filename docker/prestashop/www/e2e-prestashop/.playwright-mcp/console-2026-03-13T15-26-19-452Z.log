@@ -1,0 +1,5 @@
+[    1813ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[    1828ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[    1837ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[    1855ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[    2184ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9

@@ -1,0 +1,16 @@
+{
+  "name": "epayco/woocommerce-integration-tests",
+  "description": "Integration tests for ePayco WooCommerce gateway",
+  "type": "project",
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  },
+  "scripts": {
+    "test": "phpunit -c phpunit.integration.xml",
+    "test:create-token": "bash scripts/run-create-token-test.sh",
+    "test:create-or-update-customer": "bash scripts/run-create-customer.sh"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

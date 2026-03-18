@@ -7,8 +7,8 @@
             "request": "launch",
             "port": 9004,
             "pathMappings":{
-                "/var/www/html":"${workspaceFolder}/www"
-                //"/var/www/html":"${workspaceFolder}/docker/wordpress/www"
+                //"/var/www/html":"${workspaceFolder}/www"
+                "/var/www/html":"${workspaceFolder}/docker/wordpress/www"
             }
         }
     ]

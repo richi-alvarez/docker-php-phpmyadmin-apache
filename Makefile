@@ -24,7 +24,7 @@ help: ## Show this help message
 
 start: ## Start the containers
 	docker network create www-network || true
-	U_ID=${UID} docker compose up -d --build
+	U_ID=${UID} docker-compose -f docker-compose-debug.yml --env-file ./docker/api.env up -d --build
 
 start-wordpress: ## Start only the wordpress container
 	U_ID=${UID} docker-compose -f docker-compose-debug.yml --env-file ./docker/api.env stop

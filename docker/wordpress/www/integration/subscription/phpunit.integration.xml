@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.integration.php" colors="true" cacheResult="false">
+  <testsuites>
+    <testsuite name="EpaycoSubscription Integration Tests">
+      <file>CreateTokenIntegrationTest.php</file>
+      <file>CreateOrUpdateEpaycoCustomerIntegrationTest.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

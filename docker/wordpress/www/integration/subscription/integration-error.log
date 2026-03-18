@@ -1,0 +1,7 @@
+[06-Mar-2026 16:45:06 UTC] Epayco SDk request: /v1/tokens method: POST
+[06-Mar-2026 16:45:08 UTC] Epayco createToken request: {"status":true,"id":"9ab0493f42deb10a807457e","success":true,"type":"card","data":{"status":"exitoso","id":"9ab0493f42deb10a807457e","created":"03\/06\/2026","livemode":false},"card":{"exp_month":"07","exp_year":"2031","name":"mastercard","mask":"232002******1126"},"object":"token"}[06-Mar-2026 16:57:12 UTC] createOrUpdateEpaycoCustomer: 1
+[06-Mar-2026 16:57:23 UTC] createOrUpdateEpaycoCustomer: 1
+[06-Mar-2026 17:08:16 UTC] PHP Warning:  Constant WP_DEBUG already defined in /var/www/html/wp-config.php(128) : eval()'d code on line 1
+[06-Mar-2026 17:08:58 UTC] PHP Warning:  Constant WP_DEBUG already defined in /var/www/html/wp-config.php(128) : eval()'d code on line 1
+[06-Mar-2026 17:09:15 UTC] PHP Warning:  Constant WP_DEBUG already defined in /var/www/html/wp-config.php(128) : eval()'d code on line 1
+[06-Mar-2026 17:13:12 UTC] createOrUpdateEpaycoCustomer0ss: richissa111@epayco.com

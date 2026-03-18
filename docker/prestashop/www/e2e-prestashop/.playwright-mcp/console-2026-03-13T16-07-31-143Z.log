@@ -1,0 +1,6 @@
+[     517ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://finding-gerald-way-tales.trycloudflare.com/en/admin140r5z4dmcpk2edorrn/index.php?controller=AdminLogin:0
+[     533ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     544ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     546ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     567ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9
+[     627ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://finding-gerald-way-tales.trycloudflare.com/themes/core.js:9

@@ -1,0 +1,2 @@
+composer run test:create-token EPAYCO_API_KEY=xxxx EPAYCO_PRIVATE_KEY=xxxxx
+composer run test:test:create-or-update-customer EPAYCO_API_KEY=xxxx EPAYCO_PRIVATE_KEY=xxxxx
