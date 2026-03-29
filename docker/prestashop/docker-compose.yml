@@ -1,6 +1,6 @@
 services:
      # docker compose -f 'docker-compose.yml' up -d --build 'mysql'
-    mysql:
+    db:
         #container_name: mysql
         #image: mariadb:10.6.4-focal
         image: mysql:8.0
@@ -8,7 +8,7 @@ services:
         #image: mysql:5.5
         restart: always
         ports: 
-            - "3308:3306"
+            - "3305:3306"
         command: --default-authentication-plugin=mysql_native_password  --explicit_defaults_for_timestamp=1
         #command: --default-authentication-plugin=caching_sha2_password
         environment:
@@ -33,11 +33,11 @@ services:
         #image: prestashop/prestashop:9.0-apache
         restart: unless-stopped
         depends_on:
-            - mysql
+            - db
         ports:
-            - 8083:80
+            - 8183:80
         environment:
-            DB_SERVER: mysql
+            DB_SERVER: db
             DB_NAME: prestashop
             DB_USER: root
             DB_PASSWD: test
@@ -92,18 +92,18 @@ services:
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         links:
-            - mysql:mysql
+            - db:db
         ports:
-            - 8089:80
+            - 8087:80
         restart: always
         environment:
             PMA_ARBITRARY: 1
-            PMA_HOST: mysql
+            PMA_HOST: db
             MYSQL_USER: root
             MYSQL_PASSWORD: test
             MYSQL_ROOT_PASSWORD: test
         depends_on:
-            mysql:
+            db:
                 condition: service_healthy
         networks:
             - local-network

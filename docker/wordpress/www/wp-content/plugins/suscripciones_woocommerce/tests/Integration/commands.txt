@@ -1,0 +1,53 @@
+---                                                                                                  
+  Comandos para ejecutar manualmente                                                                   
+                                                                                                       
+  # Suite completa de integración                                                                      
+  ./vendor/bin/phpunit --testsuite Integration                                                         
+  
+  # Solo tests con API real de ePayco (sandbox)                                                        
+  ./vendor/bin/phpunit --group real-api                                                              
+                                                                                                       
+  # Tests de integración sin los real-api                                                              
+  ./vendor/bin/phpunit --testsuite Integration --exclude-group real-api
+                                                                                                       
+  # Un test específico                                                                               
+  ./vendor/bin/phpunit --filter test_real_api_getPlans_retorna_plan_o_false
+                                                                                                       
+  # Todas las suites (Unit + Integration)
+  ./vendor/bin/phpunit                                                                                 
+                                                                                                       
+  # Con salida detallada (verbose)
+  ./vendor/bin/phpunit --testsuite Integration --testdox                                               
+                                                                                                       
+  ▎ Nota: Los tests @group real-api hacen llamadas HTTP al sandbox de ePayco y requieren conexión a    
+  internet. El token EPAYCO_TOKEN caduca rápidamente — si el test del webhook completo necesita pasar  
+  exitosamente, debes reemplazar EPAYCO_TOKEN en EpaycoSuscriptionIntegrationTest.php con un token     
+  fresco generado desde el checkout.          
+
+  
+Para ejecutar la prueba de integración completa (token + customer + plan + pago + actualización de   
+  orden/suscripción en WooCommerce real), tienes dos opciones:
+                                                                                                       
+  ---                                                                                                  
+  Opción A — Con WordPress real (actualiza BD, requiere contenedores activos):                         
+                                                                                                       
+  # 1. Entrar al contenedor                                                                            
+  make ssh-be                                                                                          
+                  
+  # 2. Ir al plugin
+  cd /var/www/html/wp-content/plugins/suscripciones_woocommerce
+                                                                                                       
+  # 3. Ejecutar solo el test del flujo completo
+  vendor/bin/phpunit --configuration phpunit.integration.xml --filter                                  
+  test_real_api_flujo_completo_webhook                                                                 
+  
+  Opción B — Desde el host (sin persistencia en BD, usa stubs):                                        
+                  
+  # Desde la raíz del plugin
+  ./vendor/bin/phpunit --group real-api                                                                
+                                                                                                       
+  ---                                                                                                  
+  ▎ Importante: Los tests @group real-api hacen llamadas HTTP al sandbox de ePayco. Si el webhook      
+  completo falla por token expirado, debes reemplazar EPAYCO_TOKEN en                                  
+  tests/Integration/Gateways/EpaycoSuscriptionIntegrationTest.php con un token fresco generado desde el
+   checkout.       

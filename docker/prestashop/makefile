@@ -44,7 +44,7 @@ ssh-be: ## bash into the be container
 	U_ID=${UID} docker exec -it --user ${UID} ${DOCKER_BE} bash
 
 start-mysql: ## Start mysql container
-	U_ID=${UID} docker compose -f 'docker-compose.yml' up -d --build 'mysql'
+	U_ID=${UID} docker compose -f 'docker-compose.yml' up -d --build 'db'
 
 start-prestashop: ## Start the containers in local mode
 	U_ID=${UID} docker compose -f 'docker-compose.yml' --env-file ../api.env up -d --build ${DOCKER_BE}

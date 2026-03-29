@@ -1,0 +1,41 @@
+[    2302ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[    2304ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[    2308ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[    2382ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[    3059ms] [WARNING] JQMIGRATE: jQuery.fn.click() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[    3091ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   21059ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   21061ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   21063ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   21077ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   21116ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   31001ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   31008ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   31011ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   31029ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   31051ms] [WARNING] JQMIGRATE: jQuery.fn.submit() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   31057ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   66218ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   66220ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   66223ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   66233ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   66257ms] [WARNING] JQMIGRATE: jQuery.fn.submit() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   66263ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   78435ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   78439ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   78441ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   78449ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   78472ms] [WARNING] JQMIGRATE: jQuery.fn.submit() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   78477ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   85409ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   85414ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   85415ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   85422ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   85442ms] [WARNING] JQMIGRATE: jQuery.fn.submit() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[   85451ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[  107094ms] [WARNING] JQMIGRATE: jQuery.expr[':'] is deprecated; use jQuery.expr.pseudos @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[  107099ms] [WARNING] JQMIGRATE: jQuery.fn.mouseup() event shorthand is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[  107101ms] [WARNING] JQMIGRATE: jQuery.fn.delegate() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[  107108ms] [WARNING] JQMIGRATE: 'ready' event is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[  107147ms] [WARNING] JQMIGRATE: jQuery.fn.bind() is deprecated @ https://make-future-park-drum.trycloudflare.com/themes/core.js:9
+[  353223ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://make-future-park-drum.trycloudflare.com/favicon.ico:0

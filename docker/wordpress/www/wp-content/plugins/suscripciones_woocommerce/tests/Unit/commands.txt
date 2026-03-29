@@ -1,0 +1,29 @@
+---                                                                                                  
+  Comandos para ejecutar manualmente                                                                   
+                                                                                                       
+  Desde el directorio del plugin (suscripciones_woocommerce/):                                         
+                                                                                                       
+  # Solo tests unitarios (Unit)                                                                      
+  ./vendor/bin/phpunit --testsuite Unit                                                                
+  
+  # Solo tests de integración (Integration)                                                            
+  ./vendor/bin/phpunit --testsuite Integration                                                       
+                                                                                                       
+  # Todos los tests                                                                                  
+  ./vendor/bin/phpunit
+
+  # Un archivo específico                                                                              
+  ./vendor/bin/phpunit tests/Unit/Gateways/EpaycoSuscriptionTest.php
+                                                                                                       
+  # Un test específico por nombre                                                                    
+  ./vendor/bin/phpunit --filter test_cleanCharacters_reemplaza_espacios_con_guion                      
+                                                                                                       
+  # Con reporte detallado (verbose)
+  ./vendor/bin/phpunit --testsuite Unit --testdox                                                      
+                                                                                                       
+  # Con cobertura de código (requiere Xdebug o pcov)                                                   
+  ./vendor/bin/phpunit --testsuite Unit --coverage-text                                                
+                                                                                                       
+  ▎ Nota: Los tests de integración (WebhookRealApiTest, EpaycoSuscriptionIntegrationTest) requieren    
+  acceso real a la API de ePayco y posiblemente a la base de datos de WordPress.
+                                                                                       

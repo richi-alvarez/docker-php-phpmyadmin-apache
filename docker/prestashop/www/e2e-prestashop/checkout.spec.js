@@ -4,8 +4,8 @@ test('prestashop-epayco', async ({ page }, testInfo) => {
   test.setTimeout(240000);
   const failureScreenshotPath = testInfo.outputPath('checkout-error-or-block.png');
 try{
-  const baseUrl  = process.env.BASE_URL || 'https://finding-gerald-way-tales.trycloudflare.com/en/';
-  const productUrl = baseUrl+'women/2-9-brown-bear-printed-sweater.html#/1-size-s';
+  const baseUrl  = process.env.BASE_URL || 'https://seeker-fellowship-invisible-quarterly.trycloudflare.com/es/';
+  const productUrl = process.env.PRODUCT_URL || (baseUrl + 'women/2-9-brown-bear-printed-sweater.html#/1-size-s');
   const orderUrl =  baseUrl+'order';
   const checkoutEmail = 'ricardo.saldarriaga@epayco.com';
   const checkoutPhone = '3001234567';
@@ -224,7 +224,7 @@ try{
 
       await page.waitForTimeout(1200);
 
-      if (/\/cart|\/order/i.test(page.url())) {
+      if (/\/cart|\/carrito|\/order/i.test(page.url())) {
         const cartItems = await getCartItemsCount();
         if (cartItems >= 1) {
           return true;
@@ -241,28 +241,50 @@ try{
   const cartReady = await ensureCartHasItem();
   expect(cartReady).toBeTruthy();
 
-  await page.goto(orderUrl, { waitUntil: 'domcontentloaded' });
+  // Navegar al carrito usando la URL correcta según idioma del store
+  const langPrefix = (baseUrl.match(/\/(en|es)\//i) || [])[1]?.toLowerCase() || 'en';
+  const cartPageUrl = langPrefix === 'es' ? baseUrl + 'carrito' : baseUrl + 'cart';
+  await page.goto(cartPageUrl, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
 
   const cartItemsBeforeCheckout = await getCartItemsCount();
   expect(cartItemsBeforeCheckout).toBeGreaterThanOrEqual(1);
 
-  if (/\/cart/i.test(page.url())) {
-    const cartCheckout = page.getByRole('link', { name: /Proceed to checkout|Finalizar compra/i }).first();
-    await expect(cartCheckout).toBeVisible({ timeout: 30000 });
-    await cartCheckout.click();
-  }
+  // Usar el link del propio store para llegar al checkout con la URL correcta
+  const cartCheckout = page.getByRole('link', { name: /Proceed to checkout|Finalizar compra/i }).first();
+  await expect(cartCheckout).toBeVisible({ timeout: 30000 });
+  await cartCheckout.click();
+  await page.waitForTimeout(1500);
 
-  await page.waitForURL(/\/order/i, { timeout: 60000 });
+  // Verificar que el checkout cargó correctamente (independiente de la URL exacta)
+  const checkoutForm = page.locator('#checkout-personal-information-step, #customer-form, .js-customer-form, .checkout-step').first();
+  await expect(checkoutForm).toBeVisible({ timeout: 30000 });
 
   const genderMr = page.getByRole('radio', { name: 'Mr.' }).first();
   if (await genderMr.isVisible({ timeout: 10000 }).catch(() => false)) {
     await genderMr.check({ force: true });
   }
 
-  await fillFirstVisible(['input#field-firstname', 'input[name="firstname"]'], 'ricardo');
-  await fillFirstVisible(['input#field-lastname', 'input[name="lastname"]'], 'saldarriaga');
-  await fillFirstVisible(['input#field-email', 'input[name="email"]'], checkoutEmail);
+  await fillFirstVisible([
+    '#checkout-personal-information-step input#field-firstname',
+    '#customer-form input[name="firstname"]',
+    '.js-customer-form input[name="firstname"]',
+    'input#field-firstname',
+    'input[name="firstname"]',
+  ], 'ricardo');
+  await fillFirstVisible([
+    '#checkout-personal-information-step input#field-lastname',
+    '#customer-form input[name="lastname"]',
+    '.js-customer-form input[name="lastname"]',
+    'input#field-lastname',
+    'input[name="lastname"]',
+  ], 'saldarriaga');
+  await fillFirstVisible([
+    '#checkout-personal-information-step input#field-email',
+    '#customer-form input[name="email"]',
+    '.js-customer-form input[name="email"]',
+    'input#field-email',
+  ], checkoutEmail);
 
   // Esperar cualquier AJAX/re-render post-email
   await page.waitForTimeout(1500);
@@ -461,11 +483,11 @@ try{
   await placeOrderButton.click({ noWaitAfter: true });
 
   const movedToOrderPay = await page
-      .waitForURL(/\/en\/order-confirmation/i, { timeout: 90000 })
+      .waitForURL(/order-confirmation|confirmacion-pedido/i, { timeout: 90000 })
       .then(() => true)
       .catch(() => false);
-  await expect(page.getByText(/Your order is confirmed|Pedido confirmado/i).first()).toBeVisible({ timeout: 30000 });
-  await expect(page.getByText(/Pagar con epayco|Pagar con ePayco/i).first()).toBeVisible({ timeout: 30000 });
+  await expect(page.getByText(/Your order is confirmed|Su pedido está confirmado|Pedido confirmado/i).first()).toBeVisible({ timeout: 30000 });
+  await expect(page.getByText(/Pay with ePayco|Pagar con epayco|Pagar con ePayco/i).first()).toBeVisible({ timeout: 30000 });
 
 
   /////////////////////////////////////////////////////////////////////////
@@ -496,8 +518,8 @@ try{
       const epaycoIframe = page.locator('iframe[title="ePayco Checkout V2"]').first();
       let iframeVisible = await epaycoIframe.isVisible({ timeout: 30000 }).catch(() => false);
       const openCheckoutCandidates = [
-        page.getByRole('link', { name: /Pagar con ePayco/i }).first(),
-        page.locator('div:has-text("Cargando métodos de pago") a[href="#"]').first(),
+        page.getByRole('link', { name: /Pay with ePayco|Pagar con ePayco/i }).first(),
+        page.locator('div:has-text("Cargando métodos de pago"), div:has-text("Loading payment methods")').locator('a[href="#"]').first(),
         page.locator('a[href="#"]', { has: page.locator('img[src*="epayco"], img[alt*="epayco" i]') }).first(),
         page.locator('a[href="#"]').first(),
       ];
@@ -1090,7 +1112,7 @@ try{
 
           const reopenCheckoutCandidates = [
             page.getByRole('link', { name: /Pagar con ePayco|Pay with ePayco/i }).first(),
-            page.locator('div:has-text("Cargando métodos de pago") a[href="#"]').first(),
+            page.locator('div:has-text("Cargando métodos de pago"), div:has-text("Loading payment methods")').locator('a[href="#"]').first(),
             page.locator('a[href="#"]', { has: page.locator('img[src*="epayco"], img[alt*="epayco" i]') }).first(),
             page.locator('a[href="#"]').first(),
           ];

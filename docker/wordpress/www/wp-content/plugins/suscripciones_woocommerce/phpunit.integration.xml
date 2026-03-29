@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         bootstrap="tests/bootstrap.wp.php"
+         colors="true"
+         stopOnFailure="false">
+
+    <!--
+        Tests de integración con WordPress y WooCommerce REALES.
+        WC_Order y WC_Subscription se conectan a MySQL: update_status() persiste.
+
+        Ejecutar desde dentro del contenedor:
+            make ssh-be
+            cd wp-content/plugins/suscripciones_woocommerce
+            vendor/bin/phpunit - -configuration phpunit.integration.xml
+    -->
+
+    <testsuites>
+        <testsuite name="Integration-WP">
+            <file>tests/Integration/Gateways/WebhookRealApiTest.php</file>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <directory>src/Blocks</directory>
+        </exclude>
+    </source>
+
+</phpunit>

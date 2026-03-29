@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        /* ── Botón de pago ── */
+        #checkoutButton {
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        #checkoutForm img {
+            display: block;
+            transition: transform 0.15s ease;
+            cursor: pointer;
+        }
+
+        #checkoutForm:hover img {
+            transform: scale(0.93);
+        }
+
+        #checkoutForm.loading {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ── Mensaje de error ── */
+        #showError {
+            display: none;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #showError img {
+            width: 80px;
+        }
+
+        #showError p {
+            text-align: center;
+            font-size: large;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+
+    <p id="checkoutButton">
+        <a id="checkoutForm" href="#">
+            <img src="https://multimedia-epayco-preprod.s3.us-east-1.amazonaws.com/plugins-sdks/botonPagarEpayco.png" alt="Pagar con ePayco">
+        </a>
+    </p>
+
+    <div id="showError">
+        <img src="https://multimedia-epayco-preprod.s3.us-east-1.amazonaws.com/plugins-sdks/warning.png" alt="Error" />
+        <p id="errorMessaje"></p>
+    </div>
+
+    <script src="https://checkout.epayco.co/checkout-v2.js"></script>
+    <script>
+        const API_BASE_URL = "https://apify.epayco.co";
+
+        const btnLink  = document.getElementById('checkoutForm');
+        const btnWrap  = document.getElementById('checkoutButton');
+        const errorBox = document.getElementById('showError');
+        const errorMsg = document.getElementById('errorMessaje');
+
+        function showError(message) {
+            btnWrap.style.display  = 'none';
+            errorBox.style.display = 'flex';
+            errorMsg.textContent   = message;
+        }
+
+        btnLink.addEventListener('click', async function (e) {
+            e.preventDefault();
+
+            // Bloquear botón mientras carga
+            btnLink.classList.add('loading');
+
+            try {
+                // 1. Login → token
+                const authResponse = await axios.post(`${API_BASE_URL}/login`, {}, {
+                    auth: {
+                        username: "6f20bdfeb721ae83e332400e9cea7606",
+                        password:  "a885ac1803971c67e4a94b09a6413e19"
+                    }
+                });
+               
+                const token = authResponse.data.token;
+
+                // 2. Crear sesión de pago
+                const paymentResponse = await axios.post(`${API_BASE_URL}/payment/session/create`, {
+                    checkout_version: "2",
+                    name:             "QA Shops Online S.A.S",
+                    description:      "Tenis color negro unisex",
+                    currency:         "COP",
+                    amount:           20000.00,
+                    country:          "CO",
+                    lang:             "ES",
+                    test:             true,
+                    taxBase:          16806.72,
+                    tax:              3193.28,
+                    taxIco:           0,
+                }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                const { sessionId } = paymentResponse.data.data;
+
+                if (sessionId) {
+                    const checkout = ePayco.checkout.configure({
+                        sessionId,
+                        type: "onepage",
+                        test: true,
+                    });
+                    checkout.open();
+                } else {
+                    showError('No se pudo obtener la sesión de pago.');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError(error.message);
+            } finally {
+                // Desbloquear botón una vez finalice (éxito o error)
+                btnLink.classList.remove('loading');
+            }
+        });
+    </script>
+</body>
+</html>
